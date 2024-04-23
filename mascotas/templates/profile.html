@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block body %}
+
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+
+
+
+<div class="container-fluid" style=" margin-top: 75px;">
+
+
+    <!-- Profile -->
+
+    <!--  <p class="fs-2" style="padding-top: 40px;">Perfil {{user.first_name}}</p>-->
+    <div class="container text-center">
+        <div class="col">
+            <div class="row">
+                <table class="table">
+                    <tbody>
+                        <tr id="tname">
+                            <th scope="row">Nombre :</th>
+                            <td id="fname">{{user.first_name}}</td>
+
+                        </tr>
+                        <tr id="tlast">
+                            <th scope="row">Apellido :</th>
+                            <td id="lname">{{user.last_name}} </td>
+
+                        </tr>
+                        <tr id="temail">
+                            <th scope="row">Email :</th>
+                            <td colspan="1" id="email">{{user.email}}</td>
+
+                        </tr>
+                        {% if user.is_provedor == True%}
+                        <tr id="trazonsocial">
+                            <th scope="row">Razon Social :</th>
+                            <td colspan="1" id="razonsocial">{{provedor.razonSocial}}</td>
+
+                        </tr>
+                        <tr id="tdomicilio">
+                            <th scope="row">Domicilio :</th>
+                            <td colspan="1" id="domicilio">{{provedor.domicilio}}</td>
+
+                        </tr>
+                        <tr id="ttelefono">
+                            <th scope="row">Telefono :</th>
+                            <td colspan="1" id="telefono">{{provedor.telefono}}</td>
+
+                        </tr>
+                        {%endif%}
+
+
+
+                </table>
+                <br>
+                <div id="tbutton">
+                    <button id="buttonEdit" style="float: right;" class="btn btn-secondary" onclick="edituser()">
+                        Editar </button>
+                </div>
+                <br>
+
+                {% if not user.is_veterinario or not user.is_provedor %}
+                <div class=" col">
+                    {% if mascotas %}
+                    <p class="fs-2" style="padding-top: 40px; padding-bottom: 40px;">Mascotas Registradas</p>
+
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Especie</th>
+                                <th scope="col">Raza</th>
+                                <th scope="col">Edad</th>
+                                <th scope="col">Fecha de Nac</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mascota in mascotas %}
+                            <tr style="align-items: center; justify-content: center">
+                                <td>{{mascota.nombre}}</td>
+                                <td>{{mascota.especie}} </td>
+
+                                <td>{{mascota.raza}}</td>
+                                <td>{{mascota.edad}}</td>
+                                <td>{{mascota.fechaNac}}</td>
+
+                            </tr>
+                            {% endfor %}
+                    </table>
+
+
+
+                </div>
+                {%endif%}
+            </div>
+            <br><br>
+            <div class="row"
+                style="align-items: center; justify-content: center; text-align: center; margin-top: 20px; margin-bottom: 60px;">
+                <div class="card" style="width: 18rem;">
+                    <img src="https://random.dog/dd7513ef-2032-4c0e-bb4e-f076115bc9bf.jpg" class="card-img-top"
+                        alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Registrá tu mascota</h5>
+                        <p class="card-text">Completa la información de tu mascota para poder realizar reservas</p>
+                        <button href="#" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">Registrar</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Regristro de Mascota</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="formMascota" method="post">
+                                            {% csrf_token %}
+
+                                            <div class="form-group">
+                                                </br>
+                                                <input class="form-control" autofocus type="text" name="nombre" required
+                                                    placeholder="Nombre">
+                                            </div>
+                                            <div class="form-group">
+                                                </br>
+                                                <input class="form-control" autofocus type="text" name="especie"
+                                                    required placeholder="Especie">
+                                            </div>
+                                            <div class="form-group">
+                                                </br>
+                                                <input class="form-control" type="text" name="raza" placeholder="Raza"
+                                                    required>
+                                            </div>
+                                            <div class="form-group">
+                                                </br>
+                                                <input class="form-control" type="text" name="edad" placeholder="Edad"
+                                                    required>
+                                            </div>
+                                            <div class="form-group">
+                                                </br>
+                                                <input class="form-control" type="date" name="fechaNac" required
+                                                    placeholder="Fecha de Nacimiento">
+                                            </div>
+
+                                            </br>
+
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-light"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" value="submit"
+                                                    class="btn btn-primary">Guardar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {%endif%}
+</div>
+
+
+{% endblock %}

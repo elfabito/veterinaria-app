@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block body %}
+
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6" style="margin-top: 40px; margin-bottom: 70px; margin-right: auto;">
+            <form method="POST" enctype="multipart/form-data" id="formreserva">
+                {% csrf_token %}
+                <div class="form-group">
+                    <h4 class="fs-2"> Haga su reserva aquí</h4>
+                    <br>
+                    <p>Nombre Completo : {{user.first_name}} {{user.last_name}} </p>
+                    <p>Email : {{user.email}} </p>
+                </div>
+                <div class="form-group">
+                    {% if mascotas or user.is_veterinario or user.is_provedor %}
+                    <label for="mascota">Selecciona tu mascota</label>
+                    <select class="form-control" id="mascota" name="mascota" onchange="dynamicdropdown(this);">
+                        <option value="">---------</option>
+                        {% for mascota in mascotas %}
+                        <option value="{{mascota.nombre}}">{{mascota.nombre}}</option>
+                        {% endfor %}
+                    </select>
+                    {% else %}
+                    <p> Tienes que actualizar tu perfil antes de realizar una reserva </p>
+                    {% endif %}
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="meeting-time">Fecha y hora de la reserva</label>
+
+                    <input type="date" id="dateselected" name="dateselected" min="{{formatted}}" value="{{formatted}}"
+                        class="form-control" />
+                    <br>
+
+                    <label for="hr">Horario</label>
+                    <div class="row">
+                        <div class="col">
+                            <select class="form-select" name="hr" id="hr">
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <!-- do it for each hour -->
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" name="min" id="min">
+                                <option value="00">00</option>
+                                <option value="30">30</option>
+                            </select>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="servicio">Selecciona qué servicio deseas</label>
+                    <select class="form-control" id="servicio" name="servicio" onchange="dynamicdropdown(this);">
+                        <option value="">---------</option>
+                        <option value="paseoperros">Paseo de Perros</option>
+                        <option value="baño">Baño</option>
+                        <option value="veterinaria">Veterinaria</option>
+                    </select>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="comment">Comentarios</label>
+                    <textarea name="comment" id="comment" form="formreserva" rows="5" class="form-control"></textarea>
+                </div>
+                <br>
+                <input class="btn btn-primary" type="submit" id="reserva" value="Reservar">
+            </form>
+        </div>
+        <div class="col-md-6" style="margin-top: 50px;  justify-content: center; align-items: center; ">
+            <div class="card" style="width: 18rem;float: right;">
+                <img src="https://purina.com.uy/sites/default/files/styles/webp/public/2022-10/purina-consulta-veterinaria-para-mascotas-lo-que-debes-saber.jpg.webp?itok=i3t2XE9y"
+                    class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Veterinaria a su servicio</h5>
+                    <p class="card-text">Ofrecemos servicios de estética canina especializados. Profesionales dedicados
+                        al bienestar de tu mascota. Cuidado 24/7. Atención Personalizada.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Atención Veterinaria</li>
+                    <li class="list-group-item">Baño y Estetica</li>
+                    <li class="list-group-item">Paseo de perros</li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link">Conoce más</a>
+                    <a href="#" class="card-link">Conviertete en paseador</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

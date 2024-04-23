@@ -1,0 +1,198 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+
+<div class="container">
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+        Agregar Producto
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel1">Agregar Producto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formProducto" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            </br>
+                            <p><label>Nombre:</label></p>
+                            {{form.nombre|linebreaks}}
+                            <!-- <input class="form-control" autofocus type="text" name="nombre" placeholder="Nombre"> -->
+                        </div>
+                        <div class="form-group">
+
+                            <p><label>Descripcion:</label></p>
+                            {{form.descripcion}}
+                            <!-- <input class="form-control" autofocus type="text" name="descripcion"
+                                placeholder="Descripcion"> -->
+                        </div>
+
+                        <div class="form-group">
+                            <p><label>Imagen:</label></p>
+                            <input type='file' name='imagefile'>
+                            <!-- <input class="form-control" type="file" name="imagefile" placeholder="Imagen"> -->
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <p><label>Categoria:</label></p>
+                            {{form.categoria|linebreaks}}
+                            <!-- <input class="form-control" type="text" name="categoria" placeholder="Categoria"> -->
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <p><label>Precio:</label></p>
+                            {{form.precio|linebreaks}}
+                            <!-- <input class="form-control" type="text" name="precio" placeholder="Precio"> -->
+                        </div>
+                        </br>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+        Agregar Categoria
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel2">Agregar Categoria</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formCat" method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            </br>
+                            <p><label>Nombre:</label></p>
+                            {{formCat.name|linebreaks}}
+                            <!-- <input class="form-control" autofocus type="text" name="nombre" placeholder="Nombre"> -->
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+<br>
+<div class="container">
+    <h3> Categorias </h3>
+    <div style="display: flex; flex-wrap: wrap; ">
+        {% if categorias %}
+        {% for cat in categorias %}
+        <ul>
+
+            <li>{{cat.name}}</li>
+        </ul>
+        {%endfor%}
+        {%endif%}
+    </div>
+</div>
+<br>
+
+<div class="container">
+    <h2> Lista de Productos </h2>
+    <div class="provedoresList">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Vendedor</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Categoria</th>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Borrar</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr style="align-items: center; justify-content: center">
+                    <td>{{producto.nombre}}</td>
+                    <td>{{producto.vendedor}} </td>
+                    <td><img style="object-fit: cover; height: 120px; width: 120px;" src="{{ producto.image.url }}"
+                            alt="">
+                    </td>
+                    <td>{{producto.categoria}}</td>
+                    <td>{{producto.descripcion}}</td>
+                    <td>$ {{producto.precio}}</td>
+                    <td>{{producto.date}}</td>
+                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#{{producto.idProducto}}">
+                            Borrar
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{producto.idProducto}}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel123">Eliminar Producto</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Esta seguro que quiere eliminar a este producto ?</p>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cerrar</button>
+
+                                            <a href="{% url 'deleteproducto' producto.idProducto %}" role="button"
+                                                class="btn
+                                                                    btn-secondary">Borrar </a>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                {%endfor%}
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

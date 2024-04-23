@@ -1,0 +1,190 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+
+
+
+<div class="container-fluid" style=" padding: 35px;">
+    <div class="accordion accordion-flush" id="accordionFlushExample" style=" margin-bottom: 45px;">
+
+        <!-- Next Appointments -->
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    <span id="name">Siguientes Reservas</span><span class="btn btn-outline-success" id="count"
+                        role="alert">{{ count_approved}}
+                    </span>
+                </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center;">
+                        {% if appointment.length != 0 %}
+                        {% for appoint in appointment %}
+                        {% if appoint.approved and not appoint.canceled %}
+
+                        <div style="background-color: rgb(23, 82, 0)">
+
+
+                            <div class=" card" style="width: auto;margin: 8px;">
+
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Reserva con {{appoint.doctor}}</h5>
+
+                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
+                                    <p>Horario Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        {% endif %}
+                        {%endfor%}
+                        {%else%}
+
+
+
+                        <div> No Appoinment Found </div>
+
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments for Approve -->
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingTwo">
+                <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                    <span id="name">Reservas por aprobar</span>
+                    <span class="btn btn-outline-warning" id="count" role="alert">{{ count_forapproved}}
+                    </span>
+                </button>
+            </h2>
+            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+
+                    <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center; ">
+
+                        {% for appoint in appointment %}
+                        {% if not appoint.approved and not appoint.canceled%}
+
+                        <div style="background-color: rgb(240, 201, 96);">
+
+                            <div class=" card" style="width: auto;margin: 8px">
+
+
+                                <div class="card-body">
+                                    <h6 class="card-title">Reserva con {{appoint.doctor}}( Esperando por
+                                        aprobar... )</h6>
+
+                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
+                                    <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal1">
+                                        Cancelar Reserva
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal1" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Borrar Reserva
+                                                    </h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Si deseas continuar , la reserva se borrara completamente. Desea
+                                                    cancelar la reserva?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cerrar</button>
+                                                    <button type="button" onclick="cancelAppoint({{appoint.id}})"
+                                                        class="btn btn-primary">Cancelar
+                                                        Reserva</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endif %}
+                        {%endfor%}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canceled Appointments -->
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingThree">
+                <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+
+                    <span id="name">Reservas Canceladas </span>
+                    <span id="count" class="btn btn-outline-danger " role="alert">{{ count_canceled}}
+                    </span>
+
+                </button>
+            </h2>
+            <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+
+                    <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center;">
+                        {% for appoint in appointment %}
+                        {% if appoint.canceled %}
+                        <div style="background-color: brown">
+
+
+
+
+                            <div class=" card" style="width: auto;margin: 8px;">
+
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Reserva con {{appoint.doctor}}</h5>
+
+                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
+                                    <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+
+
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        {% endif %}
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
