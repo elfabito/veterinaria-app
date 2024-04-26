@@ -19,17 +19,18 @@
             <h2 class="accordion-header" id="flush-headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                    <span id="name">Siguientes Reservas</span><span class="btn btn-outline-success" id="count"
-                        role="alert">{{ count_approved}}
+                    <span id="name">Siguientes Reservas</span>&nbsp&nbsp{% if count_approved != 0%}<span
+                        class="btn btn-outline-success" id="count" role="alert">{{ count_approved}}
                     </span>
+                    {%endif%}
                 </button>
             </h2>
             <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
                 data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                     <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center;">
-                        {% if appointment.length != 0 %}
-                        {% for appoint in appointment %}
+                        {% if appointments %}
+                        {% for appoint in appointments %}
                         {% if appoint.approved and not appoint.canceled %}
 
                         <div style="background-color: rgb(23, 82, 0)">
@@ -39,8 +40,9 @@
 
 
                                 <div class="card-body">
-                                    <h5 class="card-title">Reserva con {{appoint.doctor}}</h5>
-
+                                    <h5 class="card-title">Reserva de {{appoint.user}}</h5>
+                                    <p>Servicio : {{appoint.service}}</p>
+                                    <p>Comentario : {{appoint.comment}}</p>
                                     <p>{{appoint.datetime|date:"l d F Y"}}</p>
                                     <p>Horario Reserva : {{appoint.datetime|date:"g:i a"}}</p>
 
@@ -48,15 +50,18 @@
                             </div>
 
                         </div>
+                        {%else%}
+
+                        <p>No hay siguientes reservas</p>
                         {% endif %}
                         {%endfor%}
                         {%else%}
 
+                        <p>No hay siguientes reservas</p>
+                        {% endif %}
 
 
-                        <div> No Appoinment Found </div>
 
-                        {%endif%}
                     </div>
                 </div>
             </div>
@@ -68,9 +73,10 @@
             <h2 class="accordion-header" id="flush-headingTwo">
                 <button class="accordion-button collapsed " type="button" data-bs-toggle="collapse"
                     data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                    <span id="name">Reservas por aprobar</span>
-                    <span class="btn btn-outline-warning" id="count" role="alert">{{ count_forapproved}}
-                    </span>
+                    <span id="name">Reservas por aprobar</span>&nbsp&nbsp
+                    {% if count_forapproved != 0 %} <span class="btn btn-outline-warning" id="count" role="alert">
+                        {{count_forapproved}}
+                    </span>{%endif%}
                 </button>
             </h2>
             <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
@@ -78,8 +84,8 @@
                 <div class="accordion-body">
 
                     <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center; ">
-
-                        {% for appoint in appointment %}
+                        {% if appointments %}
+                        {% for appoint in appointments %}
                         {% if not appoint.approved and not appoint.canceled%}
 
                         <div style="background-color: rgb(240, 201, 96);">
@@ -88,11 +94,13 @@
 
 
                                 <div class="card-body">
-                                    <h6 class="card-title">Reserva con {{appoint.doctor}}( Esperando por
+                                    <h6 class="card-title">Reserva de {{appoint.user}}( Esperando por
                                         aprobar... )</h6>
-
+                                    <p>Servicio : {{appoint.service}}</p>
+                                    <p>Comentario : {{appoint.comment}}</p>
                                     <p>{{appoint.datetime|date:"l d F Y"}}</p>
                                     <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+                                    <a onclick="approved({{appoint.id}})" class="btn btn-primary">Aprobar Reserva</a>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal1">
                                         Cancelar Reserva
@@ -128,9 +136,13 @@
                             </div>
                         </div>
 
+                        {%else%}
+                        <p>No hay reservas por aprobar</p>
                         {% endif %}
                         {%endfor%}
-
+                        {%else%}
+                        <p>No hay reservas por aprobar</p>
+                        {% endif %}
 
                     </div>
                 </div>
@@ -144,9 +156,9 @@
                 <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse"
                     data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
 
-                    <span id="name">Reservas Canceladas </span>
-                    <span id="count" class="btn btn-outline-danger " role="alert">{{ count_canceled}}
-                    </span>
+                    <span id="name">Reservas Canceladas </span>&nbsp&nbsp{% if count_canceled != 0 %}
+                    <span id="count" class="btn btn-outline-danger " role="alert"> {{count_canceled}}
+                    </span>{%endif%}
 
                 </button>
             </h2>
@@ -155,7 +167,8 @@
                 <div class="accordion-body">
 
                     <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center;">
-                        {% for appoint in appointment %}
+                        {% if appointments %}
+                        {% for appoint in appointments %}
                         {% if appoint.canceled %}
                         <div style="background-color: brown">
 
@@ -166,8 +179,9 @@
 
 
                                 <div class="card-body">
-                                    <h5 class="card-title">Reserva con {{appoint.doctor}}</h5>
-
+                                    <h5 class="card-title">Reserva de {{appoint.user}}</h5>
+                                    <p>Servicio : {{appoint.service}}</p>
+                                    <p>Comentario : {{appoint.comment}}</p>
                                     <p>{{appoint.datetime|date:"l d F Y"}}</p>
                                     <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
 
@@ -178,8 +192,13 @@
 
 
                         </div>
+                        {%else%}
+                        <p>No hay reservas canceladas</p>
                         {% endif %}
                         {%endfor%}
+                        {%else%}
+                        <p>No hay reservas canceladas</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

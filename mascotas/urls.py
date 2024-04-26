@@ -19,7 +19,7 @@ urlpatterns = [
     # API Routes
     path("profile/<int:id>", views.editUser, name="edituser"),
     path("productos/<int:id>", views.editProducto, name="editproducto"),
-    
+    path("reserva/<int:id>", views.reservaUser, name="reservaUser"),
 
     path("usuarios/delete/<int:id>", views.deleteUser, name="deleteuser"),
     path("productos/delete/<int:id>", views.deleteProducto, name="deleteproducto"),

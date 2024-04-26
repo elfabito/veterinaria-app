@@ -1,9 +1,48 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Use buttons to toggle between views
 });
+const user_id = JSON.parse(document.getElementById("user_id").textContent);
+
+function editProduct() {
+  let name = document.getElementById("productname");
+  let img = document.getElementById("productimg");
+  let categoria = document.getElementById("productcat");
+  let descripcion = document.getElementById("productdesc");
+  let price = document.getElementById("productprice");
+  let nameValue = name.innerHTML;
+  // let imgValue = img.source;
+  let catValue = categoria.innerHTML;
+  let descValue = descripcion.innerHTML;
+  let priceValue = price.innerHTML;
+  let inputname = document.createElement("input");
+  let inputcat = document.createElement("input");
+  let inputdesc = document.createElement("input");
+  let inputprice = document.createElement("input");
+
+  inputname.value = nameValue;
+  inputcat.value = catValue;
+  inputdesc.value = descValue;
+  inputprice.value = priceValue;
+  name.innerHTML = "";
+  categoria.innerHTML = "";
+  descripcion.innerHTML = "";
+  price.innerHTML = "";
+  name.append(inputname);
+  categoria.append(inputcat);
+  descripcion.append(inputdesc);
+  price.append(inputprice);
+  // img.append()
+  let btnDiv = document.getElementById("productebutton");
+  let btnEdit = document.getElementById("buttonEdit");
+  let button = document.createElement("button");
+  button.className = "btn btn-primary";
+  button.innerHTML = "Guardar";
+
+  btnDiv.innerHTML = "";
+  btnDiv.append(button);
+}
 
 function edituser() {
-  const user_id = JSON.parse(document.getElementById("user_id").textContent);
   const is_provedor = JSON.parse(
     document.getElementById("is_provedor").textContent
   );
@@ -177,3 +216,4 @@ function deleteAppoint(id) {
     .then((response) => response.json()) // or res.json()
     .then((result) => window.location.reload());
 }
+

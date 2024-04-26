@@ -145,19 +145,24 @@
             <tbody>
                 {% for producto in productos %}
                 <tr style="align-items: center; justify-content: center">
-                    <td>{{producto.nombre}}</td>
+                    <td id="productname">{{producto.nombre}}</td>
                     <td>{{producto.vendedor}} </td>
-                    <td><img style="object-fit: cover; height: 120px; width: 120px;" src="{{ producto.image.url }}"
-                            alt="">
+                    <td><img style="object-fit: cover; height: 120px; width: 120px;" id="productimg"
+                            src="{{ producto.image.url }}" alt="">
                     </td>
-                    <td>{{producto.categoria}}</td>
-                    <td>{{producto.descripcion}}</td>
-                    <td>$ {{producto.precio}}</td>
+                    <td id="productcat">{{producto.categoria}}</td>
+                    <td id="productdesc">{{producto.descripcion}}</td>
+                    <td id="productprice">$ {{producto.precio}}</td>
                     <td>{{producto.date}}</td>
-                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#{{producto.idProducto}}">
-                            Borrar
-                        </button>
+                    <td>
+                        <div><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#{{producto.idProducto}}">
+                                Borrar
+                            </button></div>
+                        <br>
+                        <div id="productebutton"><button type="button" class="btn btn-primary" onclick="editProduct()">
+                                Editar
+                            </button></div>
 
                         <!-- Modal -->
                         <div class="modal fade" id="{{producto.idProducto}}" tabindex="-1"

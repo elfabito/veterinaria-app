@@ -11,10 +11,9 @@ from django.contrib import messages
 import json
 from google_calendar_class import *
 import datetime
-from django.utils import timezone
-from django.forms.widgets import SelectDateWidget
-#Create your views here.
 
+#Create your views here.
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     productos = Producto.objects.all()
@@ -349,17 +348,9 @@ def editUser(request, id):
         return render(request, "profile.html")   
 
 
-
+@csrf_exempt
 def reservas(request):
     now = datetime.datetime.now()
-    
-    # if now.minute < 30:
-    #     now = now.replace(minute=0)
-    # elif now.hour==23:
-    #     now = now.replace(minute=0, hour=0)
-
-    # else:
-    #     now = now.replace(minute=0, hour=now.hour+1)
     formatted = now.strftime("%Y-%m-%d")
     # formatted = now.strftime("%Y-%m-%dT%H:%M")
     
@@ -372,7 +363,7 @@ def reservas(request):
             return JsonResponse({"error": "User not found."}, status=404)
     if request.method == "GET":
         return render(request , "reservas.html", { "mascotas": mascotas, "formatted": formatted
-            
+                                                         
         })
     elif request.method == "POST":
              
@@ -393,9 +384,9 @@ def reservas(request):
         new_appointment.save()
         # calendar.create_event("Hola youtube","2024-04-15T15:30:00+02:00","2024-04-15T16:00:00+02:00","America/Argentina/Buenos_Aires",["elfabito@gmail.com"])
         
-        messages.success(request, message= 'Reserva registrada correctamente, espere que el veterinario apruebe su consulta')
-        return HttpResponseRedirect(reverse("reservas"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consultao")})
-        return JsonResponse({"msg": 'Register Successfully, wait for approved'}, status=404)
+        # messages.success(request, message= 'Reserva registrada correctamente, espere que el veterinario apruebe su consulta')
+        return HttpResponseRedirect(reverse("reservas"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")})
+        # return JsonResponse({"msg": 'Register Successfully, wait for approved'}, status=404)
     
 def deleteUser(request, id):
     try: 
@@ -430,15 +421,77 @@ def deleteProvedor(request, id):
         return render(request, "provedores.html")
     
 def adminreservas(request):
-    appointment = Appointment.objects.all()
+    
+    appointments = Appointment.objects.all().order_by('datetime')
+    approved = appointments.filter(approved=True).count()
+    canceled = appointments.filter(canceled=True).count()
+    forapproved = appointments.count() - approved - canceled
     if request.method == "POST":
         pass
     else:
         if request.user.is_veterinario:
-            return render ( request, "adminreservas.html", {"appointment":appointment} )
+            return render ( request, "adminreservas.html", {"appointments":appointments, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 
-def editProducto(request):
-    pass
+@login_required
+def editProducto(request, id):
+    try:
+        producto = Producto.objects.get(pk=id)
+    except Producto.DoesNotExist:
+        messages.error(request, "Producto no existe")
+        return render(request, "productos.html")
+    
+    if request.method == "GET":
+            return JsonResponse(producto.serialize())
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        nombre = data.get("nombre")
+        producto.nombre = nombre
+        descripcion = data.get("descripcion")
+        producto.descripcion = descripcion
+        image = data.get("image")
+        producto.image = image
+        precio = data.get("precio")
+        producto.precio = precio
+        categoria = data.get("categoria")
+        producto.categoria = categoria
+        producto.save()
+            
+        return HttpResponseRedirect(reverse("productos"))
 
+
+
+@login_required
+@csrf_exempt
+def reservaUser(request, id):
+    try:
+       
+       appointment = Appointment.objects.get(pk=id)
+   
+    except Appointment.DoesNotExist:
+        return JsonResponse({"error": "Appoint not found."}, status=404)
+    if request.method == "GET":
+        return JsonResponse(appointment.serialize())
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        approved = data.get("approved")
+        appointment.approved = approved
+        canceled = data.get("canceled")
+        appointment.canceled = canceled
+
+        if appointment.approved:
+            hora_y_media_despues =  appointment.datetime + datetime.timedelta(hours=1, minutes=30)
+            print(hora_y_media_despues.strftime("%Y-%m-%dT%H:%M:%S%z"))
+            print(appointment.datetime.strftime("%Y-%m-%dT%H:%M:%S%z"))
+           
+            calendar.create_event(f"Reserva con {appointment.user}",appointment.datetime.strftime("%Y-%m-%dT%H:%M:%S%z"), hora_y_media_despues.strftime("%Y-%m-%dT%H:%M:%S%z"),"America/Argentina/Buenos_Aires",["elfabito@gmail.com", f"{appointment.email}"])
+            # calendar.create_event("Hola youtube","2024-04-15T15:30:00+02:00","2024-04-15T16:00:00+02:00","America/Argentina/Buenos_Aires",["elfabito@gmail.com"])
+        appointment.save()
+        
+        return HttpResponseRedirect(reverse("reservas"))
+        return HttpResponse(status=204)
+    elif request.method == "DELETE":
+        appointment.delete()
+        # return HttpResponseRedirect(reverse("index"))
+        return JsonResponse({"message": "Appoinment deleted successfully."}, status=201)
