@@ -90,6 +90,7 @@ class Mascota(models.Model):
     idMascota = models.AutoField(primary_key=True)
     propietario = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="mascota")
     nombre = models.CharField(max_length=17, blank=True)
+    image = models.ImageField(blank=True, null=True, upload_to="images/")
     especie = models.CharField(max_length=17, blank=True)
     raza = models.CharField(max_length=100, blank=True)
     edad = models.IntegerField()
@@ -212,7 +213,7 @@ class Appointment(models.Model):
 
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
-    email = models.EmailField(db_index=True, unique=True, max_length=250)
+    
     service = models.CharField(max_length=50)
     datetime = models.DateTimeField(blank=False, null=False)
     comment = models.TextField( blank=True)
@@ -227,7 +228,7 @@ class Appointment(models.Model):
         return {
             "id": self.id,
             "user": self.user.first_name,
-            "email": self.email,
+            "email": self.user.email,
             "service": self.service,
             "datetime" : self.datetime,
             "comment": self.comment,        

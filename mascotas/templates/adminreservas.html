@@ -1,7 +1,8 @@
 {% extends "dashboard.html" %}
 {% block content %}
+<br>
 {% if messages %}
-<ul class="messages">
+<ul class="messages" role="alert" style="padding: 10px;">
     {% for message in messages %}
     <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
         {% endfor %}
@@ -29,11 +30,11 @@
                 data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
                     <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center;">
-                        {% if appointments %}
-                        {% for appoint in appointments %}
-                        {% if appoint.approved and not appoint.canceled %}
+                        {% if appapproved %}
+                        {% for appoint in appapproved %}
 
-                        <div style="background-color: rgb(23, 82, 0)">
+
+                        <div style="background-color: rgb(23, 82, 0); margin: 20px;">
 
 
                             <div class=" card" style="width: auto;margin: 8px;">
@@ -50,15 +51,14 @@
                             </div>
 
                         </div>
-                        {%else%}
 
-                        <p>No hay siguientes reservas</p>
-                        {% endif %}
+
                         {%endfor%}
                         {%else%}
-
-                        <p>No hay siguientes reservas</p>
+                        <p>No hay reservas por aprobar</p>
                         {% endif %}
+
+
 
 
 
@@ -84,11 +84,11 @@
                 <div class="accordion-body">
 
                     <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center; ">
-                        {% if appointments %}
-                        {% for appoint in appointments %}
-                        {% if not appoint.approved and not appoint.canceled%}
+                        {% if appforapproved %}
+                        {% for appoint in appforapproved %}
 
-                        <div style="background-color: rgb(240, 201, 96);">
+
+                        <div style="background-color: rgb(88, 70, 18); margin: 20px;">
 
                             <div class=" card" style="width: auto;margin: 8px">
 
@@ -136,9 +136,7 @@
                             </div>
                         </div>
 
-                        {%else%}
-                        <p>No hay reservas por aprobar</p>
-                        {% endif %}
+
                         {%endfor%}
                         {%else%}
                         <p>No hay reservas por aprobar</p>
@@ -167,10 +165,10 @@
                 <div class="accordion-body">
 
                     <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center;">
-                        {% if appointments %}
-                        {% for appoint in appointments %}
-                        {% if appoint.canceled %}
-                        <div style="background-color: brown">
+                        {% if appcanceled %}
+                        {% for appoint in appcanceled %}
+
+                        <div style="background-color: rgb(30, 0, 32); margin: 20px;">
 
 
 
@@ -192,9 +190,7 @@
 
 
                         </div>
-                        {%else%}
-                        <p>No hay reservas canceladas</p>
-                        {% endif %}
+
                         {%endfor%}
                         {%else%}
                         <p>No hay reservas canceladas</p>

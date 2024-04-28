@@ -69,9 +69,11 @@ def register(request):
             user.save()
             
         except IntegrityError:
-            return render(request, "register.html", {
-                "message": "We have a user register with that dni"
-            })
+            messages.warning(request=request,message="We have a user register with that dni")
+            return HttpResponseRedirect(reverse("register"))
+            # return render(request, "register.html", {
+            #     "message": "We have a user register with that dni"
+            # })
         login(request, user)
         return HttpResponseRedirect(reverse("home"))
        
@@ -91,7 +93,8 @@ def profile(request):
         raza = request.POST["raza"].capitalize()
         edad = request.POST["edad"]
         fechaNac = request.POST["fechaNac"]
-        print(propietario)
+        image = request.FILES.get('imagefile')
+        
         
 
         # Attempt to create new Mascota
@@ -102,6 +105,7 @@ def profile(request):
                 raza=raza, 
                 edad=edad, 
                 fechaNac=fechaNac, 
+                image= image,
                 propietario = propietario
                 )
            
@@ -109,14 +113,12 @@ def profile(request):
             
 
         except IntegrityError:
-            return render(request, "profile.html", {
-                "message": "Hubo un problema intente mas tarde"
-            })
+            messages.warning(request=request,message="Hubo un problema intente mas tarde")
+            return HttpResponseRedirect(reverse("profile"))
         
-        return render(request, "profile.html", {
-                "message": "Mascota Registrada"
-            })
-        #return JsonResponse({"message": "Mascota register successfully."}, status=201)
+        messages.success(request=request,message="Mascota registrada correctamente")
+        return HttpResponseRedirect(reverse("profile"))
+       
     else:
         if propietario.is_provedor :
             provedor = Provedor.objects.get(provedor=propietario)
@@ -126,14 +128,15 @@ def profile(request):
     
 
 def dashboard(request):
-    usuarios = CustomUser.objects.all()
-    provedores = Provedor.objects.all()
-    
+    #Ultimos 3 usuarios, provedores y productos 
+    usuarios = CustomUser.objects.order_by('-id')[:3]
+    provedores = Provedor.objects.order_by('-idProvedor')[:3]
+    productos =  Producto.objects.order_by('-idProducto')[:3]
     if request.method == "POST":
         pass
     else:
         if request.user.is_veterinario or request.user.is_provedor:
-            return render ( request, "dashboard.html", {"provedores":provedores, "usuarios":usuarios} )
+            return render ( request, "dashboardhome.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
         
@@ -181,11 +184,8 @@ def provedores(request):
             )
             provedor.save()
         except IntegrityError:
-            return render(request, "provedores.html", {
-                "message": "Hubo un problema intente mas tarde"
-            })
-        
-        return HttpResponseRedirect(reverse("provedores"))
+            return HttpResponseRedirect(reverse("provedores"),{"message":messages.warning(request, message= 'Hubo un problema intente mas tarde')})
+        return HttpResponseRedirect(reverse("provedores"),{"message":messages.success(request, "Provedor creado con exito")})
     else:
         if request.user.is_veterinario or request.user.is_provedor:
             return render ( request, "provedores.html", {"provedores":provedores} )
@@ -285,9 +285,9 @@ def usuarios(request):
             user.save()
             
         except IntegrityError:
-            messages.warning(request, message= 'Hubo un problema intente mas tarde')
             
-        
+            return HttpResponseRedirect(reverse("usuarios"),{"message":messages.warning(request, message= 'Hubo un problema intente mas tarde')})
+        return HttpResponseRedirect(reverse("usuarios"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")})
         return HttpResponseRedirect(reverse("usuarios"))
     else:
         if request.user.is_veterinario or request.user.is_provedor:
@@ -379,15 +379,31 @@ def reservas(request):
             comment=comment,
             service=service,            
             datetime = formatted_datetime,
-            email= user.email  ,
+            
         )
         new_appointment.save()
         # calendar.create_event("Hola youtube","2024-04-15T15:30:00+02:00","2024-04-15T16:00:00+02:00","America/Argentina/Buenos_Aires",["elfabito@gmail.com"])
         
         # messages.success(request, message= 'Reserva registrada correctamente, espere que el veterinario apruebe su consulta')
         return HttpResponseRedirect(reverse("reservas"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")})
-        # return JsonResponse({"msg": 'Register Successfully, wait for approved'}, status=404)
-    
+        
+def deleteMascota(request,id):
+    try:
+        mascota = Mascota.objects.get(pk=id)
+        mascota.delete()
+        return HttpResponseRedirect(reverse("profile"),{"message":messages.success(request, "Mascota eliminada")})
+    except Category.DoesNotExist:
+        messages.error(request, "Mascota no existe")
+        return render(request, "profile.html")
+
+def deleteCat(request,id):
+    try:
+        category = Category.objects.get(pk=id)
+        category.delete()
+        return HttpResponseRedirect(reverse("productos"),{"message":messages.success(request, "Categoria eliminada")})
+    except Category.DoesNotExist:
+        messages.error(request, "Categoria no existe")
+        return render(request, "productos.html")
 def deleteUser(request, id):
     try: 
         user = CustomUser.objects.get(pk=id)
@@ -421,8 +437,10 @@ def deleteProvedor(request, id):
         return render(request, "provedores.html")
     
 def adminreservas(request):
-    
     appointments = Appointment.objects.all().order_by('datetime')
+    appforapproved = Appointment.objects.filter(approved=False,canceled=False).order_by('datetime')
+    appapproved = Appointment.objects.filter(approved=True).order_by('datetime')
+    appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime')
     approved = appointments.filter(approved=True).count()
     canceled = appointments.filter(canceled=True).count()
     forapproved = appointments.count() - approved - canceled
@@ -430,7 +448,7 @@ def adminreservas(request):
         pass
     else:
         if request.user.is_veterinario:
-            return render ( request, "adminreservas.html", {"appointments":appointments, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
+            return render ( request, "adminreservas.html", {"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 

@@ -1,17 +1,22 @@
 {% extends "dashboard.html" %}
 {% block content %}
+
 {% if messages %}
-<ul class="messages">
+<ul class="messages" role="alert" style="padding: 10px;">
     {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
+    <li{% if message.tags %} class="alert {{ message.tags }} alert-dismissible fade show" {% endif %}>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% endfor %}</li>
+
 </ul>
 {% endif %}
+
 
 <div class="container">
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+    <button style="margin: 10px;" type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#exampleModal1">
         Agregar Producto
     </button>
 
@@ -73,7 +78,8 @@
 
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+    <button style="margin: 10px;" type="button" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#exampleModal2">
         Agregar Categoria
     </button>
 
@@ -116,7 +122,8 @@
         {% for cat in categorias %}
         <ul>
 
-            <li>{{cat.name}}</li>
+            <li>{{cat.name}} <a href="{% url 'deletecat' cat.id %}" role="button">✖ </a>
+            </li>
         </ul>
         {%endfor%}
         {%endif%}
@@ -126,7 +133,7 @@
 
 <div class="container">
     <h2> Lista de Productos </h2>
-    <div class="provedoresList">
+    <div class="provedoresList table-responsive-md">
 
         <table class="table">
             <thead>
@@ -138,7 +145,7 @@
                     <th scope="col">Descripcion</th>
                     <th scope="col">Precio</th>
                     <th scope="col">Fecha</th>
-                    <th scope="col">Borrar</th>
+                    <th scope="col">Acción</th>
 
                 </tr>
             </thead>

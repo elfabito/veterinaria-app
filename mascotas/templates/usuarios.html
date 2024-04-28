@@ -1,10 +1,12 @@
 {% extends "dashboard.html" %}
 {% block content %}
 {% if messages %}
-<ul class="messages">
+<ul class="messages" role="alert" style="padding: 10px;">
     {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
+    <li{% if message.tags %} class="alert {{ message.tags }} alert-dismissible fade show" {% endif %}>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% endfor %}</li>
+
 </ul>
 {% endif %}
 
@@ -87,11 +89,12 @@
 
 <div class="container">
     <h2> Lista de Usuarios </h2>
-    <div class="provedoresList">
+    <div class="usuariosList table-responsive-md">
 
         <table class="table">
             <thead>
                 <tr>
+                    <th scope="col">CI</th>
                     <th scope="col">Nombre y Apellido</th>
                     <th scope="col">email</th>
                     <th scope="col">Rol</th>
@@ -102,6 +105,7 @@
             <tbody>
                 {% for usuario in usuarios %}
                 <tr style="align-items: center; justify-content: center">
+                    <td>{{ usuario.dni}}</td>
                     <td>{{usuario.first_name}} {{usuario.last_name}}</td>
                     <td>{{usuario.email}} </td>
                     {%if usuario.is_veterinario == True %}
@@ -131,8 +135,8 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Esta seguro que quiere eliminar a {{ usuario.first_name }} {{
-                                            usuario.last_name }}?</p>
+                                        <p>Esta seguro que quiere eliminar a {{ usuario.first_name }}
+                                            {{usuario.last_name}} ?</p>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Cerrar</button>

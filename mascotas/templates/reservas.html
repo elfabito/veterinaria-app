@@ -4,17 +4,21 @@
 
 
 
+<br>
 {% if messages %}
-<ul class="messages">
+<ul class="messages" role="alert" style="padding: 10px;">
     {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-        {% endfor %}
+    <li{% if message.tags %} class="alert {{ message.tags }} alert-dismissible fade show" {% endif %}>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% endfor %}</li>
+
 </ul>
 {% endif %}
 
+
 <div class="container">
     <div class="row">
-        <div class="col-md-6" style="margin-top: 40px; margin-bottom: 70px; margin-right: auto;">
+        <div class="col-md-6" style="margin-top: 40px ; margin-right: auto; margin-bottom: 20px;">
             <form method="POST" enctype="multipart/form-data" id="formreserva">
                 {% csrf_token %}
                 <div class="form-group">
@@ -26,15 +30,13 @@
                 <div class="form-group">
                     {% if mascotas or user.is_veterinario or user.is_provedor %}
                     <label for="mascota">Selecciona tu mascota</label>
-                    <select class="form-control" id="mascota" name="mascota" onchange="dynamicdropdown(this);">
+                    <select class="form-control" id="mascota" name="mascota" onchange="dynamicdropdown(this); required">
                         <option value="">---------</option>
                         {% for mascota in mascotas %}
                         <option value="{{mascota.nombre}}">{{mascota.nombre}}</option>
                         {% endfor %}
                     </select>
-                    {% else %}
-                    <p> Tienes que actualizar tu perfil antes de realizar una reserva </p>
-                    {% endif %}
+
                 </div>
                 <br>
                 <div class="form-group">
@@ -95,8 +97,12 @@
                 <input class="btn btn-primary" type="submit" id="reserva" value="Reservar">
             </form>
         </div>
-        <div class="col-md-6" style="margin-top: 50px;  justify-content: center; align-items: center; ">
-            <div class="card" style="width: 18rem;float: right;">
+        {% else %}
+        <p> Tienes que actualizar tu perfil antes de realizar una reserva </p>
+        {% endif %}
+        <div class="col-md-6"
+            style=" justify-content: center; align-items: center; margin-bottom: 80px; margin-top: auto;">
+            <div class="card" style="width: 18rem;margin-left: auto; margin-right: auto; ">
                 <img src="https://purina.com.uy/sites/default/files/styles/webp/public/2022-10/purina-consulta-veterinaria-para-mascotas-lo-que-debes-saber.jpg.webp?itok=i3t2XE9y"
                     class="card-img-top" alt="...">
                 <div class="card-body">

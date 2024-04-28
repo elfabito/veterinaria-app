@@ -1,0 +1,64 @@
+{% extends "dashboard.html" %}
+{% block content %}
+
+
+<div class="container-fluid text-center " style="padding: 40px;">
+    <div class="row">
+        <div class="col" style="align-items: center; text-align: center; justify-content: center; align-items: center;">
+            <br>
+            <h5 class="card-title">Ultimos 3 Usuarios Registrados</h5>
+            <br>
+            <div class="d-flex justify-content-center flex-wrap">
+                {% for usuario in usuarios %}
+                <div class="card m-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{usuario.first_name}} {{usuario.last_name}}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{usuario.email}}</h6>
+                        <p class="card-text">{{usuario.dni}}</p>
+                    </div>
+                </div>
+                {%endfor%}
+
+            </div>
+        </div>
+
+        <div class="col" style="align-items: center; text-align: center; justify-content: center;">
+            <br>
+            <h5> Ultimos 3 Provedores Registrados</h5>
+            <br>
+            <div class="d-flex justify-content-center flex-wrap">
+                {% for provedor in provedores %}
+                <div class="card m-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{provedor.provedor.first_name}} {{provedor.provedor.last_name}}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{provedor.provedor.email}}</h6>
+                        <p class="card-text">{{provedor.razonSocial}}</p>
+                        <p class="card-text">{{provedor.rut}}</p>
+                        <p class="card-text">{{provedor.telefono}}</p>
+                    </div>
+                </div>
+
+                {%endfor%}
+
+            </div>
+        </div>
+        <br>
+        <div class="col">
+            <br>
+            <h5>Ultimos 3 Productos Registrados</h5>
+            <br>
+            <div class="d-flex justify-content-center flex-wrap">
+                {% for producto in productos %}
+                <div class="card m-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{producto.nombre}} </h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{producto.categoria}}</h6>
+                        <p class="card-text">{{producto.precio}}</p>
+                    </div>
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

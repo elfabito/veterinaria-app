@@ -2,9 +2,17 @@
 {% load static %}
 {% block body %}
 
-{% if message %}
-<div class="alert alert-warning" role="alert">{{ message }}</div>
+<br>
+{% if messages %}
+<ul class="messages" role="alert" style="padding: 10px;">
+    {% for message in messages %}
+    <li{% if message.tags %} class="alert {{ message.tags }} alert-dismissible fade show" {% endif %}>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% endfor %}</li>
+
+</ul>
 {% endif %}
+
 
 <div class="container-xxl">
     <p class="fs-2" style="margin-top: 75px;">Registro de Usuario</p>

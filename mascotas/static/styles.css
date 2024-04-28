@@ -1,10 +1,8 @@
-#navbar {
-  display: flex;
-  flex-direction: column;
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+  font-family: "Poppins", sans-serif;
 }
 body {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: medium;
   height: 100vh;
 }
 #footer {
@@ -14,7 +12,6 @@ body {
   left: 0px;
   right: 0px;
   margin-bottom: 0px;
-  margin-top: 55px;
 }
 
 #name {
@@ -41,8 +38,10 @@ body {
   padding: 20px;
   margin: 20px;
 
-  display: flex;
   flex-direction: row;
   justify-content: space-around;
   text-align: center;
+}
+.table {
+  width: 100%;
 }
