@@ -173,7 +173,8 @@ class Category(models.Model):
     
     def __str__(self):
         return self.name
-    
+    def serialize(self):
+        return  self.name,
     
 class Producto(models.Model):
     idProducto = models.AutoField(primary_key=True)
@@ -194,10 +195,11 @@ class Producto(models.Model):
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields=['nombre','descripcion','image', 'categoria', 'precio']
+        fields=['nombre','descripcion','image', 'categoria', 'cantidad', 'precio']
         widgets = {
             'title':forms.TextInput(attrs={'class':'form-control'}),
             'description':forms.Textarea(attrs={'class':'form-control'}),
+            
             'image':forms.TextInput(attrs={'class':'form-control'}),
             
         }

@@ -24,12 +24,12 @@ urlpatterns = [
     path("productos/<int:id>", views.editProducto, name="productdetail"),
     path("productosList", views.productosList, name="productosList"),
     path("reserva/<int:id>", views.reservaUser, name="reservaUser"),
-    path("mascota/delete/<int:id>", views.deleteMascota, name="deletemascota"),
+    path("categorias/", views.allCat, name="allcat"),
     path("categoria/delete/<int:id>", views.deleteCat, name="deletecat"),
     path("usuarios/delete/<int:id>", views.deleteUser, name="deleteuser"),
     path("productos/delete/<int:id>", views.deleteProducto, name="deleteproducto"),
     path("provedores/delete/<int:id>", views.deleteProvedor, name="deleteprovedor"),
-    
+    path("mascota/delete/<int:id>", views.deleteMascota, name="deletemascota"),
     #Payments STRIPE Routes
     path("create-checkout-session/<int:id>", views.create_checkout_session, name="create_checkout_session"),
     path("failed/<int:id>", views.payment_failed, name="failed"),

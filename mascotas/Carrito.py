@@ -43,7 +43,7 @@ class Carrito:
             self.carrito[id]['cantidad'] -= 1
             self.carrito[id]['precio'] -= producto.precio
             
-            if self.carrito[id]['cantidad'] <= 0: self.eliminarP(producto)
+            if self.carrito[id]['cantidad'] <= 0: self.eliminarProducto(producto)
             self.guardarCarrito()
     
     def limpiarCarrito(self):

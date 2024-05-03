@@ -13,8 +13,17 @@
                 <div class="card m-2" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">{{usuario.first_name}} {{usuario.last_name}}</h5>
-                        <h6 class="card-subtitle mb-2 text-body-secondary">{{usuario.email}}</h6>
-                        <p class="card-text">{{usuario.dni}}</p>
+                        <br>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">Email : {{usuario.email}}</h6>
+                        <p class="card-text">C.I : {{usuario.dni}}</p>
+                        {% if usuario.is_veterinario %}
+                        <pclass="card-text">ROL > Veterinario</p>
+                            {%elif usuario.is_provedor %}
+                            <pclass="card-text">ROL > Provedor</p>
+                                {%else%}
+                                <pclass="card-text">ROL > User</p>
+                                    {%endif%}
+
                     </div>
                 </div>
                 {%endfor%}
@@ -32,8 +41,8 @@
                     <div class="card-body">
                         <h5 class="card-title">{{provedor.provedor.first_name}} {{provedor.provedor.last_name}}</h5>
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{provedor.provedor.email}}</h6>
-                        <p class="card-text">{{provedor.razonSocial}}</p>
-                        <p class="card-text">{{provedor.rut}}</p>
+                        <p class="card-text">RazonSocial : {{provedor.razonSocial}}</p>
+                        <p class="card-text">RUT : {{provedor.rut}}</p>
                         <p class="card-text">{{provedor.telefono}}</p>
                     </div>
                 </div>
@@ -53,10 +62,38 @@
                     <div class="card-body">
                         <h5 class="card-title">{{producto.nombre}} </h5>
                         <h6 class="card-subtitle mb-2 text-body-secondary">{{producto.categoria}}</h6>
-                        <p class="card-text">{{producto.precio}}</p>
+                        <p class="card-text">$ {{producto.precio}}</p>
+                        <p class="card-text">Cantidad : {{producto.cantidad}}</p>
                     </div>
                 </div>
                 {%endfor%}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" style="align-items: center; text-align: center; justify-content: center; align-items: center;">
+            <br>
+            <h5 class="card-title">Proximas Reservas</h5>
+            <br>
+            <div class="d-flex justify-content-center flex-wrap">
+                {% if reservas %}
+                {% for reserva in reservas %}
+                <div class="card m-2" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Reserva con {{reserva.user.first_name}} {{reserva.user.last_name}}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{reserva.service}}</h6>
+                        <p class="card-text">{{reserva.datetime}}</p>
+                        <p class="card-text">{{reserva.comment}}</p>
+                        <p class="card-text">{{reserva.time_ordered}}</p>
+                    </div>
+                </div>
+                {%endfor%}
+                {%else%}
+                <td>
+                    <div class="alert alert-danger text-center"> No hay Proximas reservas </div>
+                </td>
+                {%endif%}
             </div>
         </div>
     </div>

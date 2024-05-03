@@ -1,38 +1,53 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Use buttons to toggle between views
 });
-const user_id = JSON.parse(document.getElementById("user_id").textContent);
 
-function editProduct() {
-  let name = document.getElementById("productname");
-  let img = document.getElementById("productimg");
-  let categoria = document.getElementById("productcat");
-  let descripcion = document.getElementById("productdesc");
-  let price = document.getElementById("productprice");
+function editProduct(product_id) {
+  let name = document.getElementById(`productname${product_id}`);
+  let img = document.getElementById(`productimg${product_id}`);
+  let categoria = document.getElementById(`productcat${product_id}`);
+  let descripcion = document.getElementById(`productdesc${product_id}`);
+  let price = document.getElementById(`productprice${product_id}`);
+  let cantidad = document.getElementById(`productcant${product_id}`);
   let nameValue = name.innerHTML;
+  let cantValue = cantidad.innerHTML;
   // let imgValue = img.source;
-  let catValue = categoria.innerHTML;
+
   let descValue = descripcion.innerHTML;
-  let priceValue = price.innerHTML;
+  let priceValue = price.innerHTML.split(" ");
+
   let inputname = document.createElement("input");
-  let inputcat = document.createElement("input");
+  let inputcat = document.createElement("select");
+  inputcat.id = "selectCat";
+  let inputcant = document.createElement("input");
   let inputdesc = document.createElement("input");
   let inputprice = document.createElement("input");
+  fetch("/categorias")
+    .then((response) => response.json())
+    .then((categorias) => {
+      categorias.forEach(function (option) {
+        let optionElement = document.createElement("option");
+        optionElement.textContent = option;
+        inputcat.appendChild(optionElement);
+      });
+    });
 
   inputname.value = nameValue;
-  inputcat.value = catValue;
+  inputcant.value = cantValue;
   inputdesc.value = descValue;
-  inputprice.value = priceValue;
+  inputprice.value = priceValue[1];
+  cantidad.innerHTML = "";
   name.innerHTML = "";
   categoria.innerHTML = "";
   descripcion.innerHTML = "";
   price.innerHTML = "";
+  cantidad.append(inputcant);
   name.append(inputname);
   categoria.append(inputcat);
   descripcion.append(inputdesc);
   price.append(inputprice);
   // img.append()
-  let btnDiv = document.getElementById("productebutton");
+  let btnDiv = document.getElementById(`productebutton${product_id}`);
   let btnEdit = document.getElementById("buttonEdit");
   let button = document.createElement("button");
   button.className = "btn btn-primary";
@@ -40,9 +55,31 @@ function editProduct() {
 
   btnDiv.innerHTML = "";
   btnDiv.append(button);
+  button.addEventListener("click", (e) => {
+    e.preventDefault();
+    let new_cat = inputcat.value;
+    let name_new = inputname.value;
+    let description_new = inputdesc.value;
+    let new_cant = inputcant.value;
+    let price_new = inputprice.value;
+
+    fetch(`/productos/${product_id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        nombre: `${name_new}`,
+        categoria: `${new_cat}`,
+        descripcion: `${description_new}`,
+        precio: `${price_new}`,
+        cantidad: `${new_cant}`,
+      }),
+    }).then((result) => {
+      location.href = "productos";
+    });
+  });
 }
 
 function edituser() {
+  const user_id = JSON.parse(document.getElementById("user_id").textContent);
   const is_provedor = JSON.parse(
     document.getElementById("is_provedor").textContent
   );

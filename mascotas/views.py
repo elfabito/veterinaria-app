@@ -133,15 +133,16 @@ def profile(request):
     
 
 def dashboard(request):
-    #Ultimos 3 usuarios, provedores y productos 
+    #Ultimos 3 usuarios, provedores , reservas y productos 
     usuarios = CustomUser.objects.order_by('-id')[:3]
     provedores = Provedor.objects.order_by('-idProvedor')[:3]
     productos =  Producto.objects.order_by('-idProducto')[:3]
+    reservas = Appointment.objects.filter(approved=True).order_by('id')[:3]
     if request.method == "POST":
         pass
     else:
         if request.user.is_veterinario or request.user.is_provedor:
-            return render ( request, "dashboardhome.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos} )
+            return render ( request, "dashboardhome.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos, "reservas" : reservas} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
         
@@ -391,7 +392,13 @@ def reservas(request):
         
         # messages.success(request, message= 'Reserva registrada correctamente, espere que el veterinario apruebe su consulta')
         return HttpResponseRedirect(reverse("reservas"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")})
-        
+
+
+def allCat(request):
+    categorias = Category.objects.all()
+    return JsonResponse([categoria.serialize() for categoria in categorias], safe=False)
+
+
 def deleteMascota(request,id):
     try:
         mascota = Mascota.objects.get(pk=id)
@@ -478,15 +485,24 @@ def editProducto(request, id):
     elif request.method == "PUT":
         data = json.loads(request.body)
         nombre = data.get("nombre")
-        producto.nombre = nombre
+        if nombre is not None:
+           producto.nombre = nombre
         descripcion = data.get("descripcion")
-        producto.descripcion = descripcion
+        if descripcion is not None:
+            producto.descripcion = descripcion
         image = data.get("image")
-        producto.image = image
+        if image is not None:
+            producto.image = image
         precio = data.get("precio")
-        producto.precio = precio
-        categoria = data.get("categoria")
-        producto.categoria = categoria
+        if precio is not None:        
+            producto.precio = precio
+        categoria_text = data.get("categoria")
+        if categoria_text is not None:
+            categoria = Category.objects.get(name=categoria_text)
+            producto.categoria = categoria
+        cantidad = data.get("cantidad")
+        if cantidad is not None:
+            producto.cantidad = cantidad
         producto.save()
             
         return HttpResponseRedirect(reverse("productos"))
