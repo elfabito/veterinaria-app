@@ -9,12 +9,17 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-from auth import OAUTH2_PROVIDER
+
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 from django.contrib import messages
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+env_path = Path('.', '.env')
+load_dotenv(dotenv_path=env_path)
 
 
 # Quick-start development settings - unsuitable for production
@@ -82,9 +87,17 @@ STATICFILES_DIRS = (
 )
 WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+
+PAYPAL_MODE = os.getenv("PAYPAL_MODE")
+PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
+PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
+
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'client_secret.json'
 GOOGLE_TOKEN_FILE = 'token.json'
-OAUTH2_PROVIDER
+OAUTH2_PROVIDER = os.getenv('OAUTH2_PROVIDER')
+# OAUTH2_PROVIDER
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

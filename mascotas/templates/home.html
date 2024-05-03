@@ -82,7 +82,9 @@
             src="{{producto.image.url }}" width="120px" alt="">
         <div id="content">
             <br>
-            <h2><a href="" style="text-decoration: none;">{{producto.nombre}}</a></h2>
+            <h2><a href="{% url 'productdetail' producto.idProducto%}"
+                    style="text-decoration: none;">{{producto.nombre}}</a>
+            </h2>
 
 
 

@@ -11,9 +11,14 @@ from django.contrib import messages
 import json
 from google_calendar_class import *
 import datetime
-
-#Create your views here.
+from django.views import View
+import stripe
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.views.generic import RedirectView
+from django.shortcuts import redirect
+import paypalrestsdk
+from .Carrito import *
 
 def home(request):
     productos = Producto.objects.all()
@@ -453,15 +458,23 @@ def adminreservas(request):
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 
 @login_required
+@csrf_exempt
 def editProducto(request, id):
     try:
+
         producto = Producto.objects.get(pk=id)
+        total = 0
+        if request.user.is_authenticated:
+            if "carrito" in request.session.keys():
+                for key, value in request.session["carrito"].items():
+                    total += int(value["precio"])
+        
     except Producto.DoesNotExist:
         messages.error(request, "Producto no existe")
         return render(request, "productos.html")
     
     if request.method == "GET":
-            return JsonResponse(producto.serialize())
+           return render ( request, "productdetail.html", { "total_carrito": total,"producto": producto, "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY })
     elif request.method == "PUT":
         data = json.loads(request.body)
         nombre = data.get("nombre")
@@ -477,8 +490,18 @@ def editProducto(request, id):
         producto.save()
             
         return HttpResponseRedirect(reverse("productos"))
-
-
+    
+@login_required   
+def productosList(request):
+    
+    total = 0
+    if request.user.is_authenticated:
+        if "carrito" in request.session.keys():
+            for key, value in request.session["carrito"].items():
+                total += int(value["precio"])
+    productos = Producto.objects.all().order_by('date')        
+    return render(request, 'productoslist.html',{ "total_carrito": total,"productos": productos })      
+       
 
 @login_required
 @csrf_exempt
@@ -513,3 +536,119 @@ def reservaUser(request, id):
         appointment.delete()
         # return HttpResponseRedirect(reverse("index"))
         return JsonResponse({"message": "Appoinment deleted successfully."}, status=201)
+
+# PAYMENT STRIPE
+@csrf_exempt
+def create_checkout_session(request, id):
+    
+    producto = Producto.objects.get(idProducto=id)
+    user = CustomUser.objects.get(id= request.user.id)
+    stripe.api_key = settings.STRIPE_SECRET_KEY 
+
+    checkout_session = stripe.checkout.Session.create(
+            customer_email = user.email,
+            payment_method_types = ['card'],
+            line_items=[
+                {
+                    'price_data':{
+                        'currency': 'USD',
+                        'product_data': {
+                            'name': producto.nombre
+                        },
+                        'unit_amount': int(producto.precio * 100)
+                    },
+                    'quantity': 1
+                }
+            ],
+            mode= 'payment',
+        
+            success_url= request.build_absolute_uri(reverse("payment_success",args=[producto.idProducto])) + "?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=request.build_absolute_uri(reverse("failed",args=[producto.idProducto])) + "?session_id={CHECKOUT_SESSION_ID}",
+            )
+    return JsonResponse({"sessionId": checkout_session.id})
+    
+def payment_success(request, id):
+  return(request, 'payment_success.html')
+ 
+paypalrestsdk.configure({
+    "mode": settings.PAYPAL_MODE,
+    "client_id": settings.PAYPAL_CLIENT_ID,
+    "client_secret": settings.PAYPAL_CLIENT_SECRET,
+})
+
+#PAYMENT PAYPAL
+def create_payment(request, id):
+    producto = Producto.objects.get(pk=id)
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal",
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri(reverse('execute_payment')),
+            "cancel_url": request.build_absolute_uri(reverse('payment_failed')),
+        },
+        "transactions": [
+            {
+                "amount": {
+                    "total": ('%.2f' % producto.precio),  # Total amount in USD
+                    "currency": "USD",
+                },
+                "description": producto.nombre,
+            }
+        ],
+    })
+
+    if payment.create():
+        return redirect(payment.links[1].href)  # Redirect to PayPal for payment
+    else:
+        return render(request, 'payment_failed.html')
+
+def execute_payment(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+
+    payment = paypalrestsdk.Payment.find(payment_id)
+
+    if payment.execute({"payer_id": payer_id}):
+        return render(request, 'payment_success.html')
+    else:
+        return render(request, 'payment_failed.html')
+
+def payment_checkout(request):
+    return render(request, 'checkout.html')
+
+def payment_failed(request):
+    return render(request, 'payment_failed.html')
+
+
+def agregar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(idProducto=producto_id)
+    carrito.agregarProducto(producto)
+    return redirect("productdetail",producto_id)
+
+def eliminar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(idProducto=producto_id)
+    carrito.eliminarProducto(producto)
+    return redirect("productdetail", producto_id)
+
+def restar_producto(request, producto_id):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(idProducto=producto_id)
+    carrito.restarProducto(producto)
+    return redirect("productdetail", producto_id)
+
+def limpiar_carrito(request):
+    carrito = Carrito(request)
+    carrito.limpiarCarrito()
+    return redirect("productosList")
+
+def total_carrito(request):
+    total = 0
+    if request.user.is_authenticated:
+        if "carrito" in request.session.keys():
+            for key, value in request.session["carrito"].items():
+                total += int(value["precio"])
+    return {"total_carrito": total}

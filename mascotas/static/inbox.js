@@ -148,43 +148,6 @@ function edituser() {
   }
 }
 
-function reservac(doctor, dayOfWeek) {
-  selected = document.getElementById(
-    `${doctor.first_name} ${siguienteFecha(dayOfWeek)}`
-  );
-  value = selected.value;
-  fecha = siguienteFecha(dayOfWeek);
-
-  // Format date to datetimefield , i recieve (DAY / MONTH / YEAR )
-
-  date = fecha.split("/");
-  dateeng = date.reverse().join("-");
-  time = value.split(":");
-  datetime = dateeng + " " + time[0] + ":00";
-
-  var comment = document.getElementById("id_comment");
-
-  fetch(`reserva`, {
-    method: "POST",
-    body: JSON.stringify({
-      service: doctor.position,
-      doctor: doctor,
-      datetime: datetime,
-      comment: comment.value,
-    }),
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      if (
-        result["msg"] == "Reserva realizada con exito, espere a ser aprobado."
-      ) {
-        location.href = "profile";
-      } else {
-        window.location.reload();
-      }
-    });
-}
-
 function approved(id) {
   fetch(`reserva/${id}`, {
     method: "PUT",

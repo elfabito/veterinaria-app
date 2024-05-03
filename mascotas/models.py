@@ -5,6 +5,7 @@ from django.db import models
 from django import forms
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from decimal import Decimal
 # Create your models here.
 
 
@@ -181,6 +182,7 @@ class Producto(models.Model):
     descripcion = models.TextField()
     image = models.ImageField(blank=True, null=True, upload_to="images/")
     precio = models.IntegerField()
+    cantidad = models.IntegerField(default=1)
     categoria = models.ForeignKey(Category, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     
@@ -220,7 +222,7 @@ class Appointment(models.Model):
     time_ordered = models.DateTimeField(null=False, blank=False,auto_now_add=True)
     canceled = models.BooleanField(default=False)
     approved = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return f"{self.user.first_name} | day: {self.datetime} | service: {self.service} | timeorder: {self.time_ordered}"
     
@@ -236,3 +238,4 @@ class Appointment(models.Model):
             "approved": self.approved,
             "canceled": self.canceled,
         }
+    

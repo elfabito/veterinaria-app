@@ -8,8 +8,8 @@ db.sqlite3
 
 media
 credentials.json
-auth.py
 token.json
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
