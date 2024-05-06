@@ -67,7 +67,11 @@
     <div class="card-body">
         <h5 class="card-title">Promo Especial</h5>
         <p class="card-text">Con el servicio de veterinaria, incluimos el baño en tu primer encuentro.</p>
+        {% if request.user.is_authenticated %}
         <a href="{% url 'reservas' %}" class="btn btn-primary">Reservar aqui</a>
+        {%else%}
+        <a href="{% url 'register' %}" class="btn btn-primary">Registrate ahora, y disfruta de nuestros servicios</a>
+        {%endif%}
     </div>
     <div class="card-footer text-body-secondary">
         2 days ago

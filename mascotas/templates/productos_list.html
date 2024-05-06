@@ -30,10 +30,11 @@
             </div>
             {%endfor%}
         </div>
-
+        {% if request.user.is_authenticated %}
         <div class="col-4">
             {% include "carrito.html" %}
         </div>
+        {%endif%}
     </div>
 </div>
 {% endblock %}

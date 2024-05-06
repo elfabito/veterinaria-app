@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-91bh)+oue_*-k*76*#fe_ae)u-4$1)!6g=)ahp52%ew)f(p6vi
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+SITE_ID=1
 
 # Application definition
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mascotas',
+    'django.contrib.sites'
 ]
 AUTH_USER_MODEL = 'mascotas.CustomUser'
 MIDDLEWARE = [
@@ -66,11 +67,11 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert alert-danger',
 }
 
-
+SITE_ID=1
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "static")],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,17 +88,29 @@ STATICFILES_DIRS = (
 )
 WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
+#Stripe API KEYS
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
+#PayPal API KEYS
 PAYPAL_MODE = os.getenv("PAYPAL_MODE")
 PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
 PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
 
+#Google Calendar API KEYS
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'credentials.json'
 GOOGLE_TOKEN_FILE = 'token.json'
 OAUTH2_CLIENT_ID = os.getenv('OAUTH2_CLIENT_ID')
 OAUTH2_CLIENT_SECRET = os.getenv('OAUTH2_CLIENT_SECRET')
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = str(os.getenv('USER_MAIL'))
+EMAIL_HOST_PASSWORD = str(os.getenv('USER_MAIL_PASSWORD'))
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -127,6 +140,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+# EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 
 # Internationalization

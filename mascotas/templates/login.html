@@ -23,11 +23,12 @@
         <div class="form-group" style="margin-bottom: 15px;">
             <input class="form-control" type="password" name="password" placeholder="Password" required>
         </div>
-        <input class="btn btn-light" type="submit" value="Login">
+        <input class="btn btn-primary" type="submit" value="Login">
     </form>
     <div class="container" style="margin-top: 40px;">Todavía no tienes cuenta con nostros? <a
             href="{% url 'register' %}">Registrarse
             aqui.</a>
+        <p><a href="{% url 'password-reset' %}">Reset Password</a></p>
     </div>
 
 </div>

@@ -19,6 +19,9 @@ from django.views.generic import RedirectView
 from django.shortcuts import redirect
 import paypalrestsdk
 from .Carrito import *
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 def home(request):
     productos = Producto.objects.all()
@@ -48,7 +51,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("home"))
-
 
 @csrf_exempt
 def register(request):
@@ -142,7 +144,7 @@ def dashboard(request):
         pass
     else:
         if request.user.is_veterinario or request.user.is_provedor:
-            return render ( request, "adminPanel/dashboardhome.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos, "reservas" : reservas} )
+            return render ( request, "adminPanel/dashboard_home.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos, "reservas" : reservas} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
         
@@ -362,6 +364,7 @@ def reservas(request):
     
     
     try:
+        veterinarios = CustomUser.objects.filter(is_veterinario=True)
         user = CustomUser.objects.get(pk=request.user.id)
         mascotas = Mascota.objects.filter(propietario=user)
     
@@ -387,10 +390,16 @@ def reservas(request):
             datetime = formatted_datetime,
             
         )
+        recipients = [user.email]
+        for veterinario in veterinarios:
+            recipients.append(veterinario.email)
+        send_mail(
+    		subject=f'Nueva reserva de {user.first_name} esperando por aprobar',
+    		message=comment,
+    		from_email=settings.EMAIL_HOST_USER,
+    		recipient_list=recipients)
         new_appointment.save()
-        # calendar.create_event("Hola youtube","2024-04-15T15:30:00+02:00","2024-04-15T16:00:00+02:00","America/Argentina/Buenos_Aires",["elfabito@gmail.com"])
-        
-        # messages.success(request, message= 'Reserva registrada correctamente, espere que el veterinario apruebe su consulta')
+       
         return HttpResponseRedirect(reverse("reservas"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")})
 
 
@@ -424,7 +433,7 @@ def deleteUser(request, id):
         return HttpResponseRedirect(reverse("usuarios"),{"message":messages.success(request, "Usuario eliminado")})
     except CustomUser.DoesNotExist:
         messages.error(request, "User no existe")
-        return render(request, "usuarios.html")
+        return render(request, "adminPanel/usuarios.html")
     
 def deleteProducto(request, id):
     try: 
@@ -460,7 +469,7 @@ def adminreservas(request):
         pass
     else:
         if request.user.is_veterinario:
-            return render ( request, "adminPanel/adminreservas.html", {"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
+            return render ( request, "adminPanel/reservas_control.html", {"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 
@@ -481,7 +490,7 @@ def editProducto(request, id):
         return render(request, "productos.html")
     
     if request.method == "GET":
-           return render ( request, "productdetail.html", { "total_carrito": total,"producto": producto, "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY })
+           return render ( request, "product_detail.html", { "total_carrito": total,"producto": producto, "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY })
     elif request.method == "PUT":
         data = json.loads(request.body)
         nombre = data.get("nombre")
@@ -507,7 +516,7 @@ def editProducto(request, id):
             
         return HttpResponseRedirect(reverse("productos"))
     
-@login_required   
+  
 def productosList(request):
     
     total = 0
@@ -516,16 +525,19 @@ def productosList(request):
             for key, value in request.session["carrito"].items():
                 total += int(value["precio"])
     productos = Producto.objects.all().order_by('date')        
-    return render(request, 'productoslist.html',{ "total_carrito": total,"productos": productos })      
+    return render(request, 'productos_list.html',{ "total_carrito": total,"productos": productos })      
        
 
 @login_required
 @csrf_exempt
 def reservaUser(request, id):
     try:
-       
+       veterinarios = CustomUser.objects.filter(is_veterinario=True)
        appointment = Appointment.objects.get(pk=id)
-   
+       recipients = [appointment.user.email]
+    #    recipients_mails = ",".join(recipients)
+       for veterinario in veterinarios:
+           recipients.append(veterinario.email)
     except Appointment.DoesNotExist:
         return JsonResponse({"error": "Appoint not found."}, status=404)
     if request.method == "GET":
@@ -533,27 +545,42 @@ def reservaUser(request, id):
     elif request.method == "PUT":
         data = json.loads(request.body)
         approved = data.get("approved")
-        appointment.approved = approved
+        if approved is not None:
+            appointment.approved = approved
         canceled = data.get("canceled")
-        appointment.canceled = canceled
-
+        if canceled is not None:
+            appointment.canceled = canceled
+        appointment.save()
+        
         if appointment.approved:
             hora_y_media_despues =  appointment.datetime + datetime.timedelta(hours=1, minutes=30)
             print(hora_y_media_despues.strftime("%Y-%m-%dT%H:%M:%S%z"))
             print(appointment.datetime.strftime("%Y-%m-%dT%H:%M:%S%z"))
-           
-            calendar.create_event(f"Reserva con {appointment.user}",appointment.datetime.strftime("%Y-%m-%dT%H:%M:%S%z"), hora_y_media_despues.strftime("%Y-%m-%dT%H:%M:%S%z"),"America/Argentina/Buenos_Aires",["elfabito@gmail.com", f"{appointment.email}"])
-            # calendar.create_event("Hola youtube","2024-04-15T15:30:00+02:00","2024-04-15T16:00:00+02:00","America/Argentina/Buenos_Aires",["elfabito@gmail.com"])
-        appointment.save()
-        
-        return HttpResponseRedirect(reverse("reservas"))
-        return HttpResponse(status=204)
+
+            #Crea Evento de GOOGLE Calendar cuando se aprueba la reserva
+            calendar.create_event(f"Reserva con {appointment.user}",
+                                  appointment.datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                                  hora_y_media_despues.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                                  "America/Argentina/Buenos_Aires",recipients)
+            
+            send_mail(
+    		subject=f'Nueva reserva de {user.first_name} esperando por el pago',
+    		message=comment,
+    		from_email=settings.EMAIL_HOST_USER,
+    		recipient_list= recipients)
+            # calendar.create_event("Hola ","2024-04-15T15:30:00+02:00","2024-04-15T16:00:00+02:00","America/Argentina/Buenos_Aires",["example@gmail.com"])
+            return HttpResponseRedirect(reverse("reservas"),{"message":messages.success(request, "Reserva aprobada con exito")})
+        elif appointment.canceled:
+
+            return HttpResponseRedirect(reverse("reservas"),{"message":messages.error(request, "Reserva cancelada")})
+    
     elif request.method == "DELETE":
         appointment.delete()
-        # return HttpResponseRedirect(reverse("index"))
-        return JsonResponse({"message": "Appoinment deleted successfully."}, status=201)
+        
+        return HttpResponseRedirect(reverse("reservas"),{"message":messages.error(request, "Reserva eliminada")})
 
 # PAYMENT STRIPE
+@login_required
 @csrf_exempt
 def create_checkout_session(request, id):
     
@@ -582,35 +609,8 @@ def create_checkout_session(request, id):
             cancel_url=request.build_absolute_uri(reverse("failed",args=[producto.idProducto])) + "?session_id={CHECKOUT_SESSION_ID}",
             )
     return JsonResponse({"sessionId": checkout_session.id})
-# PAYMENT STRIPE CARRITO
-# @csrf_exempt
-# def create_checkout_session_carrito(request):
-#     carrito = Carrito(request)
-    
-#     user = CustomUser.objects.get(id= request.user.id)
-#     stripe.api_key = settings.STRIPE_SECRET_KEY 
 
-#     checkout_session = stripe.checkout.Session.create(
-#             customer_email = user.email,
-#             payment_method_types = ['card'],
-#             line_items=[
-#                 {
-#                     'price_data':{
-#                         'currency': 'USD',
-#                         'product_data': {
-#                             'name': str(carrito.showproductos())
-#                         },
-#                         'unit_amount': int(carrito.totalCarrito(request) * 100)
-#                     },
-#                     'quantity': 1
-#                 }
-#             ],
-#             mode= 'payment',
-        
-#             success_url= request.build_absolute_uri(reverse("payment_success")) + "?session_id={CHECKOUT_SESSION_ID}",
-#             cancel_url=request.build_absolute_uri(reverse("failed")) + "?session_id={CHECKOUT_SESSION_ID}",
-#             )
-#     return JsonResponse({"sessionId": checkout_session.id})    
+
 def payment_success(request, id):
   return(request, 'payment_success.html')
  
@@ -648,7 +648,8 @@ def create_payment(request, id):
     else:
         return render(request, 'payment_failed.html')
 
-#PAYMENT PAYPAL
+@login_required
+#PAYMENT PAYPAL CARRITO
 def create_payment_carrito(request):
     
     carrito = Carrito(request)
