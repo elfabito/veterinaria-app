@@ -10,14 +10,13 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("profile", views.profile, name="profile"),
     
-    path("provedores", views.provedores, name="provedores"),
-    path("productos", views.productos, name="productos"),
-    
-    path("usuarios", views.usuarios, name="usuarios"),
+    path("adminPanel/provedores", views.provedores, name="provedores"),
+    path("adminPanel/productos", views.productos, name="productos"),
+    path("adminPanel/usuarios", views.usuarios, name="usuarios"),
+    path("adminPanel/reservas", views.adminreservas, name="adminreservas"),
+    path("adminPanel/", views.dashboard, name="dashboard"),
+
     path("reservas", views.reservas, name="reservas"),
-    path("adminreservas", views.adminreservas, name="adminreservas"),
-    path("dashboardhome", views.dashboard, name="dashboard"),
-    
     path("payment_success/<int:id>", views.payment_success, name="payment_success"),
     # API Routes
     path("profile/<int:id>", views.editUser, name="edituser"),
@@ -32,11 +31,12 @@ urlpatterns = [
     path("mascota/delete/<int:id>", views.deleteMascota, name="deletemascota"),
     #Payments STRIPE Routes
     path("create-checkout-session/<int:id>", views.create_checkout_session, name="create_checkout_session"),
+    # path("create-checkout-session-carrito", views.create_checkout_session_carrito, name="create_checkout_session_carrito"),
     path("failed/<int:id>", views.payment_failed, name="failed"),
   
-   
     # Payments PayPal Routes
     path("pago-paypal/<int:id>", views.create_payment, name="pago-paypal"),
+    path("pago-paypal/carrito/", views.create_payment_carrito, name="pago-paypal-carrito"),
     path('execute_payment/', views.execute_payment, name='execute_payment'),
     path('payment_failed', views.payment_failed, name='payment_failed'),
 

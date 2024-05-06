@@ -94,10 +94,11 @@ PAYPAL_MODE = os.getenv("PAYPAL_MODE")
 PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
 PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
 
-GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'client_secret.json'
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'credentials.json'
 GOOGLE_TOKEN_FILE = 'token.json'
-OAUTH2_PROVIDER = os.getenv('OAUTH2_PROVIDER')
-# OAUTH2_PROVIDER
+OAUTH2_CLIENT_ID = os.getenv('OAUTH2_CLIENT_ID')
+OAUTH2_CLIENT_SECRET = os.getenv('OAUTH2_CLIENT_SECRET')
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 

@@ -1,0 +1,170 @@
+{% extends "adminPanel/dashboard.html" %}
+
+{% block content %}
+
+
+{% if messages %}
+<ul class="messages" role="alert" style="padding: 10px;">
+    {% for message in messages %}
+    <li{% if message.tags %} class="alert {{ message.tags }} alert-dismissible fade show" {% endif %}>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        {% endfor %}</li>
+
+</ul>
+{% endif %}
+
+
+<div class="container">
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal12">
+        Agregar Provedor
+    </button>
+
+    <!-- Modal -->
+    <div class="modal" id="exampleModal12" tabindex="-1" aria-labelledby="exampleModalLabel12" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel12">Agregar Provedor</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formPatient" method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" autofocus type="text" name="first_name" placeholder="Nombre">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" autofocus type="text" name="last_name" placeholder="Apellido">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="text" name="dni" placeholder="DNI">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="email" name="email" placeholder="Email Address">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="text" name="razonSocial" placeholder="Razon Social">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="text" name="rut" placeholder="RUT">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="text" name="domicilio" placeholder="Domicilio">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="text" name="telefono" placeholder="Telefono">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="password" name="password" placeholder="Password">
+                        </div>
+                        <div class="form-group">
+                            </br>
+                            <input class="form-control" type="password" name="confirmation"
+                                placeholder="Confirm Password">
+                        </div>
+                        </br>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="container">
+    <h2> Lista de Provedores </h2>
+    <div class="provedoresList table-responsive-md">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope=" col">DNI</th>
+
+                    <th scope="col">Nombre y Apellido</th>
+                    <th scope="col">Razon Social</th>
+                    <th scope="col">RUT</th>
+                    <th scope="col">Domicilio</th>
+                    <th scope="col">Telefono</th>
+                    <th scope="col">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for provedor in provedores %}
+                <tr>
+                    <th scope="row">{{provedor.provedor.dni}}</th>
+                    <td>{{provedor.provedor.first_name}} {{provedor.provedor.last_name}}</td>
+                    {% if not provedor.provedor.is_veterinario %}
+                    <td>{{provedor.razonSocial}}</td>
+                    <td>{{provedor.rut}}</td>
+                    <td>{{provedor.domicilio}}</td>
+                    <td>{{provedor.telefono}}</td>
+                    {%else%}
+                    <td>Rol Veterinario</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+
+                    {%endif%}
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#{{provedor.idProvedor}}">
+                            Borrar
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="{{provedor.idProvedor}}" tabindex="-1"
+                            aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel123">Eliminar Provedor</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Esta seguro que quiere eliminar al provedor {{provedor.provedor.first_name}}
+                                            {{provedor.provedor.last_name}} ?</p>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cerrar</button>
+
+                                            <a href="{% url 'deleteprovedor' provedor.idProvedor %}" role="button"
+                                                class="btn
+                                                                                            btn-secondary">Borrar </a>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                {%endfor%}
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

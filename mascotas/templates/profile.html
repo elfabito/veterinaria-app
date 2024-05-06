@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 {% load static %}
+
+{% block title %} Perfil de Usuario {% endblock %}
+
 {% block body %}
-
-
 
 {% if messages %}
 <ul class="messages" role="alert" style="padding: 10px;">
@@ -13,7 +14,6 @@
 
 </ul>
 {% endif %}
-
 
 <div class="container-fluid" style="flex-wrap: wrap; margin-top: 75px;">
     <div class="container text-center">
@@ -53,9 +53,6 @@
 
                         </tr>
                         {%endif%}
-
-
-
                 </table>
                 <br>
                 <div id="tbutton">
@@ -68,7 +65,6 @@
                 <div class=" col table-responsive-md">
                     {% if mascotas %}
                     <p class="fs-2" style="padding-top: 40px; padding-bottom: 40px;">Mascotas Registradas</p>
-
 
                     <table class="table">
                         <thead>

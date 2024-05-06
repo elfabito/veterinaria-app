@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "layout.html" %}
+{% load static %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Failed</title>
-</head>
+{% block title %}Payment Failed{% endblock %}
 
-<body>
+{% block body %}
+
+<div class="container m-3 p-3">
     <h1>Payment Failed</h1>
     <p>Your payment was not completed. Please try again.</p>
-</body>
 
-</html>
+</div>
+
+{% endblock %}

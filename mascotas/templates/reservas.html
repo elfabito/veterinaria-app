@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
 {% load static %}
+
+{% block title %} Reservas {% endblock %}
+
 {% block body %}
 
-
-
-<br>
 {% if messages %}
+<br>
 <ul class="messages" role="alert" style="padding: 10px;">
     {% for message in messages %}
     <li{% if message.tags %} class="alert {{ message.tags }} alert-dismissible fade show" {% endif %}>{{ message }}
@@ -14,7 +15,6 @@
 
 </ul>
 {% endif %}
-
 
 <div class="container">
     <div class="row">
@@ -73,10 +73,7 @@
                                 <option value="30">30</option>
                             </select>
                         </div>
-
-
                     </div>
-
                 </div>
                 <br>
                 <div class="form-group">
@@ -124,6 +121,5 @@
         </div>
     </div>
 </div>
-
 
 {% endblock %}

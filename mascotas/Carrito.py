@@ -49,7 +49,11 @@ class Carrito:
     def limpiarCarrito(self):
         self.session['carrito'] = {}
         self.session.modified = True
-
+    def showproductos(self):
+        productos_array = []
+        for productos in self.carrito:
+            productos_array.append(productos)
+        return productos_array    
     def totalCarrito(self, request):
         if request.user.is_authenticated:
             if "carrito" in request.session.keys():

@@ -142,7 +142,7 @@ def dashboard(request):
         pass
     else:
         if request.user.is_veterinario or request.user.is_provedor:
-            return render ( request, "dashboardhome.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos, "reservas" : reservas} )
+            return render ( request, "adminPanel/dashboardhome.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos, "reservas" : reservas} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
         
@@ -194,7 +194,7 @@ def provedores(request):
         return HttpResponseRedirect(reverse("provedores"),{"message":messages.success(request, "Provedor creado con exito")})
     else:
         if request.user.is_veterinario or request.user.is_provedor:
-            return render ( request, "provedores.html", {"provedores":provedores} )
+            return render ( request, "adminPanel/provedores.html", {"provedores":provedores} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 
@@ -222,7 +222,7 @@ def productos(request):
                 
             form = ProductoForm()
             formCat = CategoryForm()
-            return render(request, "productos.html", {
+            return render(request, "adminPanel/productos.html", {
                 "form": form,
                 "formCat" : formCat,
                 "categorias": categorias,
@@ -234,7 +234,7 @@ def productos(request):
         form = ProductoForm()
         formCat = CategoryForm()
         if request.user.is_veterinario :
-            return render(request, "productos.html", {
+            return render(request, "adminPanel/productos.html", {
             "form": form,
             "formCat" : formCat,
             "categorias": categorias,
@@ -242,7 +242,7 @@ def productos(request):
            
         })
         elif request.user.is_provedor:
-            return render(request, "productos.html", {
+            return render(request, "adminPanel/productos.html", {
             "form": form,
             "formCat" : formCat,
             "categorias": categorias,
@@ -294,10 +294,10 @@ def usuarios(request):
             
             return HttpResponseRedirect(reverse("usuarios"),{"message":messages.warning(request, message= 'Hubo un problema intente mas tarde')})
         return HttpResponseRedirect(reverse("usuarios"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")})
-        return HttpResponseRedirect(reverse("usuarios"))
+        
     else:
         if request.user.is_veterinario or request.user.is_provedor:
-            return render ( request, "usuarios.html", {"usuarios":usuarios} )
+            return render ( request, "adminPanel/usuarios.html", {"usuarios":usuarios} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
         
@@ -460,7 +460,7 @@ def adminreservas(request):
         pass
     else:
         if request.user.is_veterinario:
-            return render ( request, "adminreservas.html", {"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
+            return render ( request, "adminPanel/adminreservas.html", {"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 
@@ -582,7 +582,35 @@ def create_checkout_session(request, id):
             cancel_url=request.build_absolute_uri(reverse("failed",args=[producto.idProducto])) + "?session_id={CHECKOUT_SESSION_ID}",
             )
     return JsonResponse({"sessionId": checkout_session.id})
+# PAYMENT STRIPE CARRITO
+# @csrf_exempt
+# def create_checkout_session_carrito(request):
+#     carrito = Carrito(request)
     
+#     user = CustomUser.objects.get(id= request.user.id)
+#     stripe.api_key = settings.STRIPE_SECRET_KEY 
+
+#     checkout_session = stripe.checkout.Session.create(
+#             customer_email = user.email,
+#             payment_method_types = ['card'],
+#             line_items=[
+#                 {
+#                     'price_data':{
+#                         'currency': 'USD',
+#                         'product_data': {
+#                             'name': str(carrito.showproductos())
+#                         },
+#                         'unit_amount': int(carrito.totalCarrito(request) * 100)
+#                     },
+#                     'quantity': 1
+#                 }
+#             ],
+#             mode= 'payment',
+        
+#             success_url= request.build_absolute_uri(reverse("payment_success")) + "?session_id={CHECKOUT_SESSION_ID}",
+#             cancel_url=request.build_absolute_uri(reverse("failed")) + "?session_id={CHECKOUT_SESSION_ID}",
+#             )
+#     return JsonResponse({"sessionId": checkout_session.id})    
 def payment_success(request, id):
   return(request, 'payment_success.html')
  
@@ -620,6 +648,36 @@ def create_payment(request, id):
     else:
         return render(request, 'payment_failed.html')
 
+#PAYMENT PAYPAL
+def create_payment_carrito(request):
+    
+    carrito = Carrito(request)
+    
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal",
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri(reverse('execute_payment')),
+            "cancel_url": request.build_absolute_uri(reverse('payment_failed')),
+        },
+        "transactions": [
+            {
+                "amount": {
+                    "total": ('%.2f' % carrito.totalCarrito(request)),  # Total amount in USD
+                    "currency": "USD",
+                },
+                "description": str(carrito.showproductos()),
+            }
+        ],
+    })
+
+    if payment.create():
+        return redirect(payment.links[1].href)  # Redirect to PayPal for payment
+    else:
+        return render(request, 'payment_failed.html')
+
 def execute_payment(request):
     payment_id = request.GET.get('paymentId')
     payer_id = request.GET.get('PayerID')
@@ -631,12 +689,13 @@ def execute_payment(request):
     else:
         return render(request, 'payment_failed.html')
 
-def payment_checkout(request):
-    return render(request, 'checkout.html')
+# def payment_checkout(request):
+#     return render(request, 'checkout.html')
 
 def payment_failed(request):
     return render(request, 'payment_failed.html')
 
+# CARRITO de Compras
 
 def agregar_producto(request, producto_id):
     carrito = Carrito(request)

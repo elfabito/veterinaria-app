@@ -97,5 +97,5 @@ class GoogleCalendarManager:
 
 calendar = GoogleCalendarManager()
 
-calendar.list_upcoming_events()
+# calendar.list_upcoming_events()
 

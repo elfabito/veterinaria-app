@@ -1,58 +1,54 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
+{% load static %}
 
-<head>
-    <title>Buy cool new product</title>
-    <link rel="stylesheet" href="style.css">
-    <script
-        src="https://www.paypal.com/sdk/js?ARZ1th0GQG7fWDQlwkJCKoLdi1EQmRz30nBHUVuHH_cekCE3oIhcr6IXiK6svPzthqT62ewtnF1kOo-6=test&currency=USD"></script>
-    <script src="https://js.stripe.com/v3/"></script>
-</head>
+{% block title %} Detalles del Producto {% endblock %}
 
-<body>
-    {% extends "layout.html" %}
-    {% load static %}
-    {% block body %}
-    <div class="container text-center">
-        <div class="row align-items-center">
+{% block script %}
+<script
+    src="https://www.paypal.com/sdk/js?ARZ1th0GQG7fWDQlwkJCKoLdi1EQmRz30nBHUVuHH_cekCE3oIhcr6IXiK6svPzthqT62ewtnF1kOo-6=test&currency=USD"></script>
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
 
-            <div class="col-8  col-md-6 mt-3">
-                <div class="card" style="width: 18rem; margin-bottom: 50px;">
-                    <img src="{{ producto.image.url }}" style="object-fit: cover" width="250px" ; height="250px"
-                        class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">{{producto.nombre}}</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                            the
-                            card's
-                            content.</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">{{producto.categoria}}</li>
-                        <li class="list-group-item">{{producto.precio}}</li>
+{% block body %}
+<div class="container text-center">
+    <div class="row align-items-center">
 
-                    </ul>
-                    <div class="card-body">
-                        <a href="{% url 'agregar_producto' producto.idProducto %}" class="btn btn-primary">Agregar al
-                            carrito</a>
-                        <a type="button" id="checkout-button" style="margin: 5px;" class="btn btn-primary">Comprar con
-                            Tarjeta
-                        </a>
-                        <a style="margin: 5px;" href="{% url 'pago-paypal' producto.idProducto %}"
-                            class="btn btn-primary">
-                            Comprar con PAYPAL
-                        </a>
-                    </div>
+        <div class="col-8  col-md-6 mt-3">
+            <div class="card" style="width: 18rem; margin-bottom: 50px;">
+                <img src="{{ producto.image.url }}" style="object-fit: cover" width="250px" ; height="250px"
+                    class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{producto.nombre}}</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+                        the
+                        card's
+                        content.</p>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{producto.categoria}}</li>
+                    <li class="list-group-item">{{producto.precio}}</li>
 
+                </ul>
+                <div class="card-body">
+                    <a href="{% url 'agregar_producto' producto.idProducto %}" class="btn btn-primary">Agregar al
+                        carrito</a>
+                    <a type="button" id="checkout-button" style="margin: 5px;" class="btn btn-primary">Comprar con
+                        Tarjeta
+                    </a>
+                    <a style="margin: 5px;" href="{% url 'pago-paypal' producto.idProducto %}" class="btn btn-primary">
+                        Comprar con PAYPAL
+                    </a>
+                </div>
             </div>
-            <div class="col-4 ">
-                {% include "carrito.html" %}
-            </div>
+
         </div>
-
+        <div class="col-4 ">
+            {% include "carrito.html" %}
+        </div>
     </div>
-</body>
+
+</div>
+
 <script>
     var stripe = Stripe('{{stripe_publishable_key}}')
     var checkoutButton = document.getElementById("checkout-button")
@@ -90,5 +86,3 @@
 
 </script>
 {% endblock %}
-
-</html>
