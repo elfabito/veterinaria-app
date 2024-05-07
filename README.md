@@ -1,7 +1,7 @@
 ## Veterinaria 
 
 ## Descripción: 
-Es una aplicación web diseñada para ofrecer servicios veterinarios integrales para mascotas. Nuestra plataforma facilita la reserva de citas para servicios como baño canino, peluquería, paseo y acceso a una guardia médica disponible las 24 horas del día, los 7 días de la semana. 
+Es una aplicación web diseñada para ofrecer servicios veterinarios integrales para mascotas. La plataforma facilita la reserva de citas para servicios como baño canino, peluquería, paseo y acceso a una guardia médica disponible las 24 horas del día, los 7 días de la semana. 
 Este repositorio contiene el código fuente y los recursos relacionados con el sistema de gestión de una veterinaria. Proporciona funciones para administrar clientes, pacientes, citas, historiales médicos, y más.
 
 ## Funcionalidades:
