@@ -87,11 +87,11 @@
 
 <br>
 
-<div class="container">
+<div class="container mt-3">
     <h2> Lista de Usuarios </h2>
     <div class="usuariosList table-responsive-md">
 
-        <table class="table">
+        <table class="table" style="text-align: center; justify-content: center;">
             <thead>
                 <tr>
                     <th scope="col">CI</th>
@@ -164,5 +164,6 @@
 
     </div>
 </div>
-
+<br>
+<div class="container "><a href="{% url 'all_usuarios' %}" class="btn btn-primary"> Ver en PDF</a></div>
 {% endblock %}

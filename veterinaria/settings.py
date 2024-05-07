@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mascotas',
-    'django.contrib.sites'
+    'django.contrib.sites',
+    'xhtml2pdf'
 ]
 AUTH_USER_MODEL = 'mascotas.CustomUser'
 MIDDLEWARE = [

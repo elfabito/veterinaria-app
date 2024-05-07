@@ -17,6 +17,11 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("profile", views.profile, name="profile"),
     
+    #PDF 
+    path('lista-usuarios', views.ListUsuariosPdf.as_view(), name='all_usuarios'),
+    path('lista-productos', views.ListProductsPdf.as_view(), name='all_products'),
+    path('lista-reservas', views.ListReservasPdf.as_view(), name='all_reservas'),
+    
     #PASSWORD RESET
     path('password-reset/', PasswordResetView.as_view(template_name='users/password_reset_form.html'),name='password-reset'),
     path('password-reset/done/', PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'),name='password_reset_done'),

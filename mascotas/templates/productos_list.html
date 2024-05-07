@@ -1,40 +1,35 @@
 {% extends "layout.html" %}
 {% load static %}
 
-{% block title %}Todo los productos{% endblock %}
+{% block title %}Todos los productos{% endblock %}
 
 {% block body %}
-<div class="container text-center">
-    <div class="row align-items-center">
-        <div class="col-8 " id="list">
-            {% for producto in productos %}
-
-            <div id="productos">
-                <img style="object-fit: cover; height: 220px; width: 220px;" src="{{producto.image.url }}" width="120px"
-                    alt="">
-                <div id="content">
-                    <br>
-                    <h2><a href="{% url 'productdetail' producto.idProducto%}"
-                            style="text-decoration: none;">{{producto.nombre}}</a>
-                    </h2>
-
-
-
-                    <br>
-                    <p style="background-color: beige;">{{producto.categoria}}</p>
-                    <p>{{producto.descripcion}}</p>
-                    <h4>Precio: $ {{producto.precio}}</h4>
-                    <span>{{producto.date}}</span>
-                </div>
-
+<div class="container text-center " ">
+    <div class=" row align-items-center">
+    <div class="col-12 col-md-6 mb-4" id="list">
+        {% for producto in productos %}
+        <div id="productos">
+            <img style="object-fit: cover; height: 220px; width: 220px;" src="{{producto.image.url }}" width="120px"
+                alt="">
+            <div id="content">
+                <br>
+                <h2><a href="{% url 'productdetail' producto.idProducto%}"
+                        style="text-decoration: none;">{{producto.nombre}}</a>
+                </h2>
+                <br>
+                <p style="background-color: beige;">{{producto.categoria}}</p>
+                <p>{{producto.descripcion}}</p>
+                <h4>Precio: $ {{producto.precio}}</h4>
+                <span>{{producto.date}}</span>
             </div>
-            {%endfor%}
         </div>
-        {% if request.user.is_authenticated %}
-        <div class="col-4">
-            {% include "carrito.html" %}
-        </div>
-        {%endif%}
+        {% endfor %}
     </div>
+    {% if request.user.is_authenticated %}
+    <div class="col-12 col-md-6 mb-8" style="margin-bottom: 60px;">
+        {% include "carrito.html" %}
+    </div>
+    {% endif %}
+</div>
 </div>
 {% endblock %}

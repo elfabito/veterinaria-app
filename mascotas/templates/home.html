@@ -81,13 +81,13 @@
 <div id="list" style="padding-bottom: 50px;">
     {% for producto in productos %}
 
-    <div id="productos">
+    <div id="productos" style="margin-bottom: 40px;">
         <img style="object-fit: cover; height: 220px; width: 220px; margin-left: 12px;margin-right: 12px;"
             src="{{producto.image.url }}" width="120px" alt="">
         <div id="content">
             <br>
             <h2><a href="{% url 'productdetail' producto.idProducto%}"
-                    style="text-decoration: none;">{{producto.nombre}}</a>
+                    style="text-decoration: none; font-size: large;">{{producto.nombre}}</a>
             </h2>
 
 

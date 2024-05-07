@@ -22,14 +22,14 @@
 <body>
     <div class="sidebar">
         <div class="logo-details">
-            <img src="/mascotas/static/logo1.png" class='bx bxl-c-plus-plus icon'
+            <img src="{% static 'logo1.png' %}" class='bx bxl-c-plus-plus icon'
                 style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px; margin-right: 10px;"
                 alt="profileImg">
 
             <div class="logo_name">Settings PC</div>
             <i class='bx bx-menu' id="btn"></i>
         </div>
-        <ul class="nav-list">
+        <ul class="nav-list" style="padding-left: 0px;">
             <li>
                 <i class='bx bx-search'></i>
                 <input type="text" placeholder="Search...">
@@ -77,13 +77,13 @@
 
             <li class="profile">
                 <div class="profile-details">
-                    <img src="static/logo1.png" alt="profileImg">
+                    <img src="{% static 'logo1.png' %}" alt="profileImg">
                     <div class="name_job">
                         <div class="name">{{user.first_name}}</div>
                         <div class="job">{% if user.is_veterinario %} Veterinario {%else%} Provedor {%endif%}</div>
                     </div>
                 </div>
-                <a class='bx bx-log-out' href="{% url 'home'%}" id="log_out"></a>
+                <a class='bx bx-log-out' style="font-size: 15px;" href="{% url 'home'%}" id="log_out"></a>
             </li>
         </ul>
     </div>

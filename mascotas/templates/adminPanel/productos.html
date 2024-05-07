@@ -141,7 +141,7 @@
     <h2> Lista de Productos </h2>
     <div class="provedoresList table-responsive-md">
 
-        <table class="table">
+        <table class="table" style="text-align: center; justify-content: center;">
             <thead>
                 <tr>
                     <th scope="col">Nombre</th>
@@ -212,6 +212,7 @@
                 {%endfor%}
 
         </table>
+        <div class="container "><a href="{% url 'all_products' %}" class="btn btn-primary"> Ver en PDF</a></div>
 
     </div>
 </div>

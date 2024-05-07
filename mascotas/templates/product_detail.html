@@ -13,7 +13,7 @@
 <div class="container text-center">
     <div class="row align-items-center">
 
-        <div class="col-8  col-md-6 mt-3">
+        <div class="col-12 col-md-6 mt-3">
             <div class="card" style="width: 18rem; margin-bottom: 50px;">
                 <img src="{{ producto.image.url }}" style="object-fit: cover" width="250px" ; height="250px"
                     class="card-img-top" alt="...">
@@ -43,10 +43,10 @@
 
         </div>
         {% if request.user.is_authenticated %}
-        <div class="col-4 ">
+        <div class="col-12 col-md-6">
             {% include "carrito.html" %}
         </div>
-        {%endif%}
+        {% endif %}
     </div>
 
 </div>
@@ -84,7 +84,5 @@
     catch (error) {
         console.log(error)
     }
-
-
 </script>
 {% endblock %}

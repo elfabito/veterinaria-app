@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.http import JsonResponse
 from django.contrib import messages
 import json
@@ -15,12 +15,15 @@ from django.views import View
 import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.views.generic import RedirectView
 from django.shortcuts import redirect
 import paypalrestsdk
 from .Carrito import *
 from django.core.mail import send_mail
 from django.conf import settings
+from .utils import render_to_pdf
+from django.contrib.auth.decorators import user_passes_test
+
+
 
 
 def home(request):
@@ -260,8 +263,42 @@ def productos(request):
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
         
-    
-    
+   
+class ListUsuariosPdf(View):
+    def get(self,request, *args, **kwargs):
+        usuarios = CustomUser.objects.all()
+        data = {
+            'usuarios' : usuarios
+        }
+        pdf = render_to_pdf('pdf/usuarios_pdf.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+        
+class ListProductsPdf(View):
+    def get(self,request, *args, **kwargs):
+        productos = Producto.objects.all()
+        data = {
+            'productos' : productos
+        }
+        pdf = render_to_pdf('pdf/productos_pdf.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+     
+class ListReservasPdf(View):
+    def get(self,request, *args, **kwargs):
+        reservas = Appointment.objects.all()
+        appapproved = Appointment.objects.filter(approved=True).order_by('datetime')
+        appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime')
+        appforapproved = Appointment.objects.filter(approved=False,canceled=False).order_by('datetime')
+        data = {
+            'appapproved' : appapproved,
+            'appcanceled' : appcanceled,
+            'appforapproved' : appforapproved
+        }
+        pdf = render_to_pdf('pdf/reservas_pdf.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
+
+
 @csrf_exempt
 def usuarios(request):
     usuarios = CustomUser.objects.all()

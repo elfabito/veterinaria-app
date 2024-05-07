@@ -1,0 +1,35 @@
+<div class="container" style="text-align: center; justify-content: center;">
+    <h2> Lista de Usuarios </h2>
+    <div class="usuariosList table-responsive-md">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">CI</th>
+                    <th scope="col">Nombre y Apellido</th>
+                    <th scope="col">email</th>
+                    <th scope="col">Telefono</th>
+
+                    <th scope="col">Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr style="align-items: center; justify-content: center">
+                    <td>{{ usuario.dni}}</td>
+                    <td>{{usuario.first_name}} {{usuario.last_name}}</td>
+                    <td>{{usuario.email}} </td>
+                    <td>{{usuario.telefono}} </td>
+                    {%if usuario.is_veterinario == True %}
+                    <td>Veterinario </td>
+                    {% elif usuario.is_provedor == True %}
+                    <td>Provedor </td>
+                    {% else %}
+                    <td>User</td>
+                    {%endif%}
+                </tr>
+
+                {%endfor%}
+
+        </table>
+    </div>
+</div>
