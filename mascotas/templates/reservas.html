@@ -78,12 +78,19 @@
                 <br>
                 <div class="form-group">
                     <label for="servicio">Selecciona qué servicio deseas</label>
+                    <select class="form-control" id="servicio" name="servicio" onchange="dynamicdropdown(this); required">
+                        <option value="">---------</option>
+                        {% for servicio in servicios %}
+                        <option value="{{servicio.name}}">{{servicio.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- <label for="servicio">Selecciona qué servicio deseas</label>
                     <select class="form-control" id="servicio" name="servicio" onchange="dynamicdropdown(this);">
                         <option value="">---------</option>
                         <option value="paseoperros">Paseo de Perros</option>
                         <option value="baño">Baño</option>
                         <option value="veterinaria">Veterinaria</option>
-                    </select>
+                    </select> -->
                 </div>
                 <br>
                 <div class="form-group">

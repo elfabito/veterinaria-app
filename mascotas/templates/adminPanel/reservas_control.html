@@ -96,8 +96,7 @@
 
 
                                 <div class="card-body">
-                                    <h6 class="card-title">Reserva de {{appoint.user}}( Esperando por
-                                        aprobar... )</h6>
+                                    <h6 class="card-title">Reserva de {{appoint.user}}</h6>
                                     <p>Servicio : {{appoint.service}}</p>
                                     <p>Comentario : {{appoint.comment}}</p>
                                     <p>{{appoint.datetime|date:"l d F Y"}}</p>
@@ -185,7 +184,7 @@
                                     <p>{{appoint.datetime|date:"l d F Y"}}</p>
                                     <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
 
-
+                                    <a onclick="deleteAppoint({{appoint.id}})" class="btn btn-primary">Eliminar</a>
 
                                 </div>
                             </div>
@@ -200,6 +199,64 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="container p-3 mt-3">
+
+        <!-- Button trigger modal -->
+        <button style="margin: 10px;" type="button" class="btn btn-primary" data-bs-toggle="modal"
+            data-bs-target="#exampleModal2">
+            Agregar Servicio
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel2">Agregar Categoria</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formCat" method="post">
+                            {% csrf_token %}
+
+                            <div class="form-group">
+                                </br>
+                                <p><label>Nombre:</label></p>
+                                {{formService.name|linebreaks}}
+                                <p><label>Precio:</label></p>
+                                {{formService.precio|linebreaks}}
+                                <!-- <input class="form-control" autofocus type="text" name="nombre" placeholder="Nombre"> -->
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary">Agregar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <br>
+    <div class="container">
+        <h3> Servicios </h3>
+        <div style="display: flex; flex-wrap: wrap; ">
+            {% if servicios %}
+            {% for servicio in servicios %}
+            <ul>
+
+                <li>{{servicio.name}} ${{servicio.precio}}<a href="" role="button">✖ </a>
+                </li>
+            </ul>
+            {%endfor%}
+            {%endif%}
         </div>
     </div>
 </div>

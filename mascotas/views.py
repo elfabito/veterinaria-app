@@ -90,7 +90,13 @@ def register(request):
 @csrf_exempt
 def profile(request):
     propietario = CustomUser.objects.get(pk=request.user.id) 
-    
+    appointments = Appointment.objects.all().order_by('datetime')
+    appforapproved = Appointment.objects.filter(approved=False,canceled=False).order_by('datetime')
+    appapproved = Appointment.objects.filter(approved=True).order_by('datetime')
+    appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime')
+    approved = appointments.filter(approved=True).count()
+    canceled = appointments.filter(canceled=True).count()
+    forapproved = appointments.count() - approved - canceled
     mascotas = Mascota.objects.filter(propietario=propietario)
     if request.method == "POST":
                 
@@ -129,9 +135,9 @@ def profile(request):
     else:
         if propietario.is_provedor :
             provedor = Provedor.objects.get(provedor=propietario)
-            return render(request, "profile.html", {"mascotas":mascotas, "provedor":provedor})
+            return render(request, "profile.html", {"mascotas":mascotas, "provedor":provedor} )
         else:
-            return render(request, "profile.html", {"mascotas":mascotas, })
+            return render(request, "profile.html", {"mascotas":mascotas,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved})
     
 
 def dashboard(request):
@@ -364,6 +370,7 @@ def reservas(request):
     
     
     try:
+        servicios = Service.objects.all()
         veterinarios = CustomUser.objects.filter(is_veterinario=True)
         user = CustomUser.objects.get(pk=request.user.id)
         mascotas = Mascota.objects.filter(propietario=user)
@@ -371,12 +378,13 @@ def reservas(request):
     except user.DoesNotExist:
             return JsonResponse({"error": "User not found."}, status=404)
     if request.method == "GET":
-        return render(request , "reservas.html", { "mascotas": mascotas, "formatted": formatted
+        return render(request , "reservas.html", {"servicios":servicios, "mascotas": mascotas, "formatted": formatted
                                                          
         })
     elif request.method == "POST":
              
         service = request.POST["servicio"]
+        service_obj = Service.objects.get(name=service)
         request_date = request.POST["dateselected"]
         request_h = request.POST["hr"]
         request_min = request.POST["min"]
@@ -386,7 +394,7 @@ def reservas(request):
         new_appointment = Appointment.objects.create(
             user = user,
             comment=comment,
-            service=service,            
+            service=service_obj,            
             datetime = formatted_datetime,
             
         )
@@ -446,8 +454,6 @@ def deleteProducto(request, id):
         return render(request, "productos.html")
     
 def deleteProvedor(request, id):
-
-
     try: 
         provedor = Provedor.objects.get(pk=id)
         provedor.delete()
@@ -465,11 +471,23 @@ def adminreservas(request):
     approved = appointments.filter(approved=True).count()
     canceled = appointments.filter(canceled=True).count()
     forapproved = appointments.count() - approved - canceled
+    formService = ServiceForm()
+    servicios = Service.objects.all()
     if request.method == "POST":
-        pass
+        nombre = request.POST["name"]
+        precio = request.POST["precio"]
+        try:
+            service = Service.objects.create(
+                name=nombre,
+                precio=precio, 
+                )
+            service.save()           
+        except IntegrityError:
+            return HttpResponseRedirect(reverse("adminreservas"),{"message":messages.warning(request, message= 'Hubo un problema intente mas tarde')})
+        return HttpResponseRedirect(reverse("adminreservas"),{"message":messages.success(request, "Servicio creado correctamente")})
     else:
         if request.user.is_veterinario:
-            return render ( request, "adminPanel/reservas_control.html", {"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
+            return render ( request, "adminPanel/reservas_control.html", {"servicios":servicios,"formService":formService,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 
@@ -689,9 +707,6 @@ def execute_payment(request):
         return render(request, 'payment_success.html')
     else:
         return render(request, 'payment_failed.html')
-
-# def payment_checkout(request):
-#     return render(request, 'checkout.html')
 
 def payment_failed(request):
     return render(request, 'payment_failed.html')

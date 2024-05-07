@@ -147,7 +147,6 @@ class Provedor(models.Model):
      
      def serialize(self):
         return {
-            
             "idProvedor": self.idProvedor,
             "provedor": self.provedor,
             "first_name": self.provedor.first_name,
@@ -199,9 +198,7 @@ class ProductoForm(forms.ModelForm):
         widgets = {
             'title':forms.TextInput(attrs={'class':'form-control'}),
             'description':forms.Textarea(attrs={'class':'form-control'}),
-            
-            'image':forms.TextInput(attrs={'class':'form-control'}),
-            
+            'image':forms.TextInput(attrs={'class':'form-control'}),          
         }
 
 class CategoryForm(forms.ModelForm):
@@ -209,16 +206,36 @@ class CategoryForm(forms.ModelForm):
         model = Category
         fields=['name']
         widgets = {
-            'name':forms.TextInput(attrs={'class':'form-control'}),
-            
+            'name':forms.TextInput(attrs={'class':'form-control'}),         
         }
 
+class Service(models.Model):
+    name = models.CharField(max_length=50)
+    precio = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+    
+    def serialize(self):
+        return {
+            "name": self.name,
+            "precio": self.precio,          
+        }
+    
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields=['name','precio']
+        widgets = {
+            'name':forms.TextInput(attrs={'class':'form-control'}),     
+        }
+        
 class Appointment(models.Model):
 
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
     
-    service = models.CharField(max_length=50)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, null=True, blank=True)
     datetime = models.DateTimeField(blank=False, null=False)
     comment = models.TextField( blank=True)
     time_ordered = models.DateTimeField(null=False, blank=False,auto_now_add=True)
