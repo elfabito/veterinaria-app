@@ -21,7 +21,8 @@ urlpatterns = [
     path('lista-usuarios', views.ListUsuariosPdf.as_view(), name='all_usuarios'),
     path('lista-productos', views.ListProductsPdf.as_view(), name='all_products'),
     path('lista-reservas', views.ListReservasPdf.as_view(), name='all_reservas'),
-    
+    path('lista-provedores', views.ListProvedoresPdf.as_view(), name='all_provedores'),
+
     #PASSWORD RESET
     path('password-reset/', PasswordResetView.as_view(template_name='users/password_reset_form.html'),name='password-reset'),
     path('password-reset/done/', PasswordResetDoneView.as_view(template_name='users/password_reset_done.html'),name='password_reset_done'),
@@ -46,11 +47,12 @@ urlpatterns = [
     path("usuarios/delete/<int:id>", views.deleteUser, name="deleteuser"),
     path("productos/delete/<int:id>", views.deleteProducto, name="deleteproducto"),
     path("provedores/delete/<int:id>", views.deleteProvedor, name="deleteprovedor"),
+    path("service/delete/<int:id>", views.deleteServicio, name="deleteservice"),
     path("mascota/delete/<int:id>", views.deleteMascota, name="deletemascota"),
 
     #Payments STRIPE Routes
     path("create-checkout-session/<int:id>", views.create_checkout_session, name="create_checkout_session"),
-    # path("create-checkout-session-carrito", views.create_checkout_session_carrito, name="create_checkout_session_carrito"),
+    path("create-checkout-session-carrito", views.create_checkout_session_carrito, name="create_checkout_session_carrito"),
     path("failed/<int:id>", views.payment_failed, name="failed"),
     path("payment_success/<int:id>", views.payment_success, name="payment_success"),
     
@@ -58,8 +60,8 @@ urlpatterns = [
     path("pago-paypal/<int:id>", views.create_payment, name="pago-paypal"),
     path("pago-paypal/carrito/", views.create_payment_carrito, name="pago-paypal-carrito"),
     path('execute_payment/', views.execute_payment, name='execute_payment'),
-    path('payment_failed', views.payment_failed, name='payment_failed'),
-
+    path('payment_failed', views.payment_failed, name='payment_failed_carrito'),
+    path("payment_success/", views.payment_success, name="payment_success_carrito"),
     #Carrito Routes
 
     path('agregar/<int:producto_id>/', views.agregar_producto, name="agregar_producto"),

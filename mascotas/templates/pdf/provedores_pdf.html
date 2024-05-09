@@ -1,0 +1,42 @@
+<div class="container" style="text-align: center; justify-content: center;">
+    <h2> Lista de Provedores </h2>
+    <div class="usuariosList table-responsive-md">
+        <table class="table" style="text-align: center; justify-content: center;">
+            <thead>
+                <tr>
+                    <th scope=" col">DNI</th>
+
+                    <th scope="col">Nombre y Apellido</th>
+                    <th scope="col">Razon Social</th>
+                    <th scope="col">RUT</th>
+                    <th scope="col">Domicilio</th>
+                    <th scope="col">Telefono</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for provedor in provedores %}
+                <tr>
+                    <th scope="row">{{provedor.provedor.dni}}</th>
+                    <td>{{provedor.provedor.first_name}} {{provedor.provedor.last_name}}</td>
+                    {% if not provedor.provedor.is_veterinario %}
+                    <td>{{provedor.razonSocial}}</td>
+                    <td>{{provedor.rut}}</td>
+                    <td>{{provedor.domicilio}}</td>
+                    <td>{{provedor.telefono}}</td>
+                    {%else%}
+                    <td>Rol Veterinario</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+
+                    {%endif%}
+
+                </tr>
+
+                {%endfor%}
+
+        </table>
+    </div>
+</div>

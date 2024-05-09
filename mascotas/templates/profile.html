@@ -15,7 +15,7 @@
 </ul>
 {% endif %}
 
-<div class="container-fluid" style="flex-wrap: wrap; margin-top: 75px;">
+<div class="container-fluid" style="flex-wrap: wrap; margin-top: 35px; text-align: center;">
     <div class="container text-center">
         <div class="col">
             <div class="row table-responsive-md">
@@ -70,10 +70,10 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#flush-collapseOne" aria-expanded="false"
                                     aria-controls="flush-collapseOne">
-                                    <span id="name">Siguientes Reservas</span>&nbsp&nbsp{% if count_approved != 0%}<span
+                                    <span id="name">Siguientes Reservas</span>&nbsp&nbsp <span
                                         class="btn btn-outline-success" id="count" role="alert">{{ count_approved}}
                                     </span>
-                                    {%endif%}
+
                                 </button>
                             </h2>
                             <div id="flush-collapseOne" class="accordion-collapse collapse"
@@ -83,7 +83,6 @@
                                         style="align-items: center;padding: 25px; text-align: center;">
 
                                         {% for appoint in appapproved %}
-
 
                                         <div style="background-color: rgb(23, 82, 0); margin: 20px;">
 
@@ -95,8 +94,11 @@
                                                     <h5 class="card-title">Reserva de {{appoint.user}}</h5>
                                                     <p>Servicio : {{appoint.service}}</p>
                                                     <p>Comentario : {{appoint.comment}}</p>
-                                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
-                                                    <p>Horario Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+                                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}
+                                                    </p>
+                                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                                    </p>
+                                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
 
                                                 </div>
                                             </div>
@@ -114,10 +116,8 @@
                                     </div>
                                 </div>
                             </div>
-                            {% endif %}
-
                         </div>
-
+                        {% endif %}
                         <!-- Appointments for Approve -->
                         {% if appforapproved %}
                         <div class="accordion-item">
@@ -126,10 +126,9 @@
                                     data-bs-target="#flush-collapseTwo" aria-expanded="false"
                                     aria-controls="flush-collapseTwo">
                                     <span id="name">Reservas por aprobar</span>&nbsp&nbsp
-                                    {% if count_forapproved != 0 %} <span class="btn btn-outline-warning" id="count"
-                                        role="alert">
+                                    <span class="btn btn-outline-warning" id="count" role="alert">
                                         {{count_forapproved}}
-                                    </span>{%endif%}
+                                    </span>
                                 </button>
                             </h2>
                             <div id="flush-collapseTwo" class="accordion-collapse collapse"
@@ -151,8 +150,11 @@
                                                     <h6 class="card-title">Reserva de {{appoint.user}}</h6>
                                                     <p>Servicio : {{appoint.service}}</p>
                                                     <p>Comentario : {{appoint.comment}}</p>
-                                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
-                                                    <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+                                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}
+                                                    </p>
+                                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                                    </p>
+                                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
 
                                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                                         data-bs-target="#exampleModal1">
@@ -178,11 +180,11 @@
                                                                     cancelar la reserva?
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary"
+                                                                    <button type="button" class="btn btn-secondary mt-3"
                                                                         data-bs-dismiss="modal">Cerrar</button>
                                                                     <button type="button"
                                                                         onclick="cancelAppoint({{appoint.id}})"
-                                                                        class="btn btn-primary">Cancelar
+                                                                        class="btn btn-primary mt-3">Cancelar
                                                                         Reserva</button>
                                                                 </div>
                                                             </div>
@@ -200,9 +202,9 @@
                                     </div>
                                 </div>
                             </div>
-                            {% endif %}
-                        </div>
 
+                        </div>
+                        {% endif %}
                         <!-- Canceled Appointments -->
                         {% if appcanceled %}
                         <div class="accordion-item">
@@ -211,9 +213,10 @@
                                     data-bs-target="#flush-collapseThree" aria-expanded="false"
                                     aria-controls="flush-collapseThree">
 
-                                    <span id="name">Reservas Canceladas </span>&nbsp&nbsp{% if count_canceled != 0 %}
-                                    <span id="count" class="btn btn-outline-danger " role="alert"> {{count_canceled}}
-                                    </span>{%endif%}
+                                    <span id="name">Reservas Canceladas </span>&nbsp&nbsp
+                                    <span id="count" class="btn btn-outline-danger " role="alert">
+                                        {{count_canceled}}
+                                    </span>
 
                                 </button>
                             </h2>
@@ -238,11 +241,72 @@
                                                     <h5 class="card-title">Reserva de {{appoint.user}}</h5>
                                                     <p>Servicio : {{appoint.service}}</p>
                                                     <p>Comentario : {{appoint.comment}}</p>
-                                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
-                                                    <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+                                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}
+                                                    </p>
+                                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                                    </p>
+                                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
 
                                                     <a onclick="deleteAppoint({{appoint.id}})"
-                                                        class="btn btn-primary">Eliminar</a>
+                                                        class="btn btn-primary mt-3">Eliminar</a>
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        {%endfor%}
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- PASS Appointments -->
+                        {% if appointments_pass %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingThree">
+                                <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#flush-collapseThree" aria-expanded="false"
+                                    aria-controls="flush-collapseThree">
+
+                                    <span id="name">Reservas Pasadas </span>&nbsp&nbsp{% if passcount != 0 %}
+                                    <span id="count" class="btn btn-outline-danger " role="alert"> {{passcount}}
+                                    </span>{%endif%}
+
+                                </button>
+                            </h2>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse"
+                                aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+
+                                    <div class="d-flex flex-wrap"
+                                        style="align-items: center;padding: 25px; text-align: center;">
+
+                                        {% for appoint in appointments_pass %}
+
+                                        <div style="background-color: rgb(30, 0, 32); margin: 20px;">
+
+
+
+
+                                            <div class=" card" style="width: auto;margin: 8px;">
+
+
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Reserva de {{appoint.user}}</h5>
+                                                    <p>Servicio : {{appoint.service}}</p>
+
+                                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}
+                                                    </p>
+                                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                                    </p>
+                                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
+                                                    <a onclick="deleteAppoint({{appoint.id}})"
+                                                        class="btn btn-primary mt-3">Eliminar</a>
 
                                                 </div>
                                             </div>
@@ -260,123 +324,121 @@
                         {% endif %}
                     </div>
 
-
-
                 </div>
-
-
-
-                {% if not user.is_veterinario or not user.is_provedor %}
-                <div class=" col table-responsive-md">
-                    {% if mascotas %}
-                    <p class="fs-2" style="padding-bottom: 40px;">Mascotas Registradas</p>
-
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Foto</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Especie</th>
-                                <th scope="col">Raza</th>
-                                <th scope="col">Edad</th>
-                                <th scope="col">Fecha de Nac</th>
-                                <th scope="col">Borrar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for mascota in mascotas %}
-                            <tr style="align-items: center; justify-content: center">
-                                <td>
-                                    {% if mascota.image %}<img src="{{mascota.image.url}}" alt="" width="32" height="32"
-                                        class="rounded-circle me-2">{%else%}<img src="static/custom.jpg" alt=""
-                                        width="32" height="32" class="rounded-circle me-2">{%endif%}</td>
-                                <td>{{mascota.nombre}}</td>
-                                <td>{{mascota.especie}} </td>
-
-                                <td>{{mascota.raza}}</td>
-                                <td>{{mascota.edad}}</td>
-                                <td>{{mascota.fechaNac}}</td>
-                                <td><a href="{% url 'deletemascota' mascota.idMascota %}" role="button">✖ </a></td>
-                            </tr>
-                            {% endfor %}
-                    </table>
-                </div>
-                {%endif%}
             </div>
 
-            <div class="row" style="align-items: center; justify-content: center; text-align: center; ">
-                <div class="card" style="width: 18rem; margin-bottom: 80px;  margin-top: 50px;">
-                    <img src="https://random.dog/dd7513ef-2032-4c0e-bb4e-f076115bc9bf.jpg" class="card-img-top"
-                        alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Registrá tu mascota</h5>
-                        <p class="card-text">Completa la información de tu mascota para poder realizar reservas</p>
-                        <button href="#" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal">Registrar</button>
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Regristro de Mascota</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+        </div>
+
+
+
+        {% if not user.is_veterinario or not user.is_provedor %}
+        <div class=" col table-responsive-md text-align-center justify-content-center">
+            {% if mascotas %}
+            <p class="fs-2" style="padding-bottom: 40px;">Mascotas Registradas</p>
+
+            <table class="table" style="align-items: center; text-align: center; justify-content: center;">
+                <thead>
+                    <tr>
+                        <th scope="col">Foto</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Especie</th>
+                        <th scope="col">Raza</th>
+                        <th scope="col">Edad</th>
+                        <th scope="col">Fecha de Nac</th>
+                        <th scope="col">Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mascota in mascotas %}
+                    <tr>
+                        <td>
+                            {% if mascota.image %}<img src="{{mascota.image.url}}" alt="" width="35" height="35"
+                                class="rounded-circle me-2">{%else%}<img src="static/custom.jpg" alt="" width="35"
+                                height="35" class="rounded-circle me-2">{%endif%}</td>
+                        <td>{{mascota.nombre}}</td>
+                        <td>{{mascota.especie}} </td>
+
+                        <td>{{mascota.raza}}</td>
+                        <td>{{mascota.edad}}</td>
+                        <td>{{mascota.fechaNac}}</td>
+                        <td><a href="{% url 'deletemascota' mascota.idMascota %}" role="button">✖ </a></td>
+                    </tr>
+                    {% endfor %}
+            </table>
+        </div>
+        {%endif%}
+    </div>
+
+    <div class="row" style="align-items: center; justify-content: center; text-align: center; ">
+        <div class="card"
+            style="width: 18rem; margin-bottom: 80px;  margin-top: 50px; text-align: center; justify-content: center;">
+            <img src="https://random.dog/dd7513ef-2032-4c0e-bb4e-f076115bc9bf.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Registrá tu mascota</h5>
+                <p class="card-text">Completa la información de tu mascota para poder realizar reservas</p>
+                <button href="#" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">Registrar</button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Regristro de Mascota</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formMascota" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+
+                                    <div class="form-group">
+                                        </br>
+                                        <input class="form-control" autofocus type="text" name="nombre" required
+                                            placeholder="Nombre">
                                     </div>
-                                    <div class="modal-body">
-                                        <form id="formMascota" method="post">
-                                            {% csrf_token %}
-
-                                            <div class="form-group">
-                                                </br>
-                                                <input class="form-control" autofocus type="text" name="nombre" required
-                                                    placeholder="Nombre">
-                                            </div>
-                                            <div class="form-group">
-                                                </br>
-                                                <input class="form-control" autofocus type="text" name="especie"
-                                                    required placeholder="Especie">
-                                            </div>
-                                            <div class="form-group">
-                                                </br>
-                                                <input class="form-control" type="text" name="raza" placeholder="Raza"
-                                                    required>
-                                            </div>
-                                            <div class="form-group">
-                                                </br>
-                                                <input class="form-control" type="text" name="edad" placeholder="Edad"
-                                                    required>
-                                            </div>
-                                            <div class="form-group">
-                                                </br>
-                                                <input class="form-control" type="date" name="fechaNac" required
-                                                    placeholder="Fecha de Nacimiento">
-                                            </div>
-                                            <div class="form-group">
-                                                </br>
-                                                <input class="form-control" type='file' name='imagefile'>
-                                            </div>
-                                            </br>
-
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-light"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" value="submit"
-                                                    class="btn btn-primary">Guardar</button>
-                                            </div>
-                                        </form>
+                                    <div class="form-group">
+                                        </br>
+                                        <input class="form-control" autofocus type="text" name="especie" required
+                                            placeholder="Especie">
                                     </div>
-                                </div>
+                                    <div class="form-group">
+                                        </br>
+                                        <input class="form-control" type="text" name="raza" placeholder="Raza" required>
+                                    </div>
+                                    <div class="form-group">
+                                        </br>
+                                        <input class="form-control" type="text" name="edad" placeholder="Edad" required>
+                                    </div>
+                                    <div class="form-group">
+                                        </br>
+                                        <input class="form-control" type="date" name="fechaNac" required
+                                            placeholder="Fecha de Nacimiento">
+                                    </div>
+                                    <div class="form-group">
+                                        </br>
+                                        <input class="form-control" type='file' id='imagefile' name='imagefile'>
+                                    </div>
+                                    </br>
+
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" value="submit" class="btn btn-primary">Guardar</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
-        {%endif%}
     </div>
+
+</div>
+{%endif%}
+</div>
 
 </div>
 

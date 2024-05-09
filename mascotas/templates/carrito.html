@@ -1,3 +1,4 @@
+{% load static %}
 <div class="alert alert-primary" role="alert">
     <table class="table table-bordered">
         <thead>
@@ -37,50 +38,15 @@
     </table>
     <hr>
 </div>
-<div class="row text-center">
-    <div class="col-6"><a href="{% url 'clean_carrito' %}" class="btn btn-danger">Limpiar</a></div>
-    <div class="col-6"><a style="margin: 5px;" href="{% url 'pago-paypal-carrito'  %}" class="btn btn-primary">
+<div class="row justify-content-center">
+    <div class="col-3"><a href="{% url 'clean_carrito' %}" class="btn btn-danger" style="margin: 5px;">Limpiar</a></div>
+    <div class="col-4"><a style="margin: 5px;; justify-content: end" href="{% url 'pago-paypal-carrito'  %}"
+            class="btn btn-primary">
             Comprar con PAYPAL
         </a></div>
-    <!-- <div class="col-4"><a type="button" id="checkout-button-carrito" style="margin: 5px;"
-            class="btn btn-primary">Comprar con
+    <div class="col-4"><a type="button" id="carritocheckout-button" style="margin: 5px; justify-content: end;"
+            class="btn btn-primary">Comprar
+            con
             Tarjeta
-        </a></div> -->
+        </a></div>
 </div>
-
-<!-- <script>
-    var stripe = Stripe('{{stripe_publishable_key}}')
-    var checkoutButton = document.getElementById("checkout-button-carrito")
-
-    try {
-        checkoutButton.addEventListener("click", function () {
-            checkoutButton.innerHTML = "Processing <i class='fas fa-spinner fa-spin'></i>"
-            var email = "{{request.user.email}}"
-            fetch("/create-checkout-session-carrito/", {
-                method: "POST",
-                body: JSON.stringify({ email: email })
-            })
-                .then(function (response) {
-                    console.log(response)
-                    console.log(stripe)
-                    return response.json()
-                })
-                .then(function (session) {
-                    return stripe.redirectToCheckout({ sessionId: session.sessionId })
-                })
-                .then(function (result) {
-                    if (result.error) {
-                        alert(result.error.message)
-                    }
-                })
-                .catch(function (error) {
-                    console.log("error", error)
-                })
-        })
-    }
-    catch (error) {
-        console.log(error)
-    }
-
-
-</script> -->

@@ -18,7 +18,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6" style="margin-top: 40px ; margin-right: auto; margin-bottom: 20px;">
+        <div class="col-md-6" style="margin-top: 40px ; margin-right: auto;">
             <form method="POST" enctype="multipart/form-data" id="formreserva">
                 {% csrf_token %}
                 <div class="form-group">
@@ -78,7 +78,8 @@
                 <br>
                 <div class="form-group">
                     <label for="servicio">Selecciona qué servicio deseas</label>
-                    <select class="form-control" id="servicio" name="servicio" onchange="dynamicdropdown(this); required">
+                    <select class="form-control" id="servicio" name="servicio"
+                        onchange="dynamicdropdown(this); required">
                         <option value="">---------</option>
                         {% for servicio in servicios %}
                         <option value="{{servicio.name}}">{{servicio.name}}</option>
@@ -102,7 +103,7 @@
             </form>
         </div>
         {% else %}
-        <p> Tienes que actualizar tu perfil antes de realizar una reserva </p>
+        <p> Tienes que agregar tu mascota en el perfil antes de realizar una reserva </p>
         {% endif %}
         <div class="col-md-6"
             style=" justify-content: center; align-items: center; margin-bottom: 80px; margin-top: auto;">

@@ -13,8 +13,11 @@
 
 
 
-<div class="container" style=" padding: 35px;">
-    <div class="accordion accordion-flush" id="accordionFlushExample" style=" margin-bottom: 45px;">
+<div class="container">
+    <div class="container " style="margin-bottom: 30px; margin-left: 10px;margin-right: 10px;"><a
+            href="{% url 'all_reservas' %}" class="btn btn-primary"> Ver
+            en PDF</a></div>
+    <div class="accordion accordion-flush" id="accordionFlushExample">
 
         <!-- Next Appointments -->
 
@@ -22,7 +25,7 @@
             <h2 class="accordion-header" id="flush-headingOne">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                    <span id="name">Siguientes Reservas</span>&nbsp&nbsp{% if count_approved != 0%}<span
+                    <span id="name">Siguientes Reservas</span>&nbsp&nbsp {% if count_approved != 0%}<span
                         class="btn btn-outline-success" id="count" role="alert">{{ count_approved}}
                     </span>
                     {%endif%}
@@ -46,8 +49,11 @@
                                     <h5 class="card-title">Reserva de {{appoint.user}}</h5>
                                     <p>Servicio : {{appoint.service}}</p>
                                     <p>Comentario : {{appoint.comment}}</p>
-                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
-                                    <p>Horario Reserva : {{appoint.datetime|date:"g:i a"}}</p>
+                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}</p>
+                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                    </p>
+                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
+                                    <br>
 
                                 </div>
                             </div>
@@ -98,11 +104,16 @@
                                 <div class="card-body">
                                     <h6 class="card-title">Reserva de {{appoint.user}}</h6>
                                     <p>Servicio : {{appoint.service}}</p>
+
                                     <p>Comentario : {{appoint.comment}}</p>
-                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
-                                    <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
-                                    <a onclick="approved({{appoint.id}})" class="btn btn-primary">Aprobar Reserva</a>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}</p>
+                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                    </p>
+                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
+                                    <br>
+                                    <a onclick="approved({{appoint.id}})" class="btn btn-primary mt-3">Aprobar
+                                        Reserva</a>
+                                    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal1">
                                         Cancelar Reserva
                                     </button>
@@ -123,10 +134,10 @@
                                                     cancelar la reserva?
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
+                                                    <button type="button" class="btn btn-secondary mt-3"
                                                         data-bs-dismiss="modal">Cerrar</button>
                                                     <button type="button" onclick="cancelAppoint({{appoint.id}})"
-                                                        class="btn btn-primary">Cancelar
+                                                        class="btn btn-primary mt-3">Cancelar
                                                         Reserva</button>
                                                 </div>
                                             </div>
@@ -181,10 +192,12 @@
                                     <h5 class="card-title">Reserva de {{appoint.user}}</h5>
                                     <p>Servicio : {{appoint.service}}</p>
                                     <p>Comentario : {{appoint.comment}}</p>
-                                    <p>{{appoint.datetime|date:"l d F Y"}}</p>
-                                    <p>Horario de Reserva : {{appoint.datetime|date:"g:i a"}}</p>
-
-                                    <a onclick="deleteAppoint({{appoint.id}})" class="btn btn-primary">Eliminar</a>
+                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}</p>
+                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                    </p>
+                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
+                                    <br>
+                                    <a onclick="deleteAppoint({{appoint.id}})" class="btn btn-primary mt-3">Eliminar</a>
 
                                 </div>
                             </div>
@@ -200,8 +213,63 @@
                 </div>
             </div>
         </div>
+
+        <!-- PASS Appointments -->
+        {% if appointments_pass %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingThree25">
+                <button class="accordion-button collapsed  " type="button" data-bs-toggle="collapse"
+                    data-bs-target="#flush-collapseThree25" aria-expanded="false" aria-controls="flush-collapseThree">
+
+                    <span id="name">Reservas Pasadas </span>&nbsp&nbsp{% if passcount != 0 %}
+                    <span id="count" class="btn btn-outline-danger " role="alert"> {{passcount}}
+                    </span>{%endif%}
+
+                </button>
+            </h2>
+            <div id="flush-collapseThree25" class="accordion-collapse collapse" aria-labelledby="flush-headingThree"
+                data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+
+                    <div class="d-flex flex-wrap" style="align-items: center;padding: 25px; text-align: center;">
+
+                        {% for appoint in appointments_pass %}
+
+                        <div style="background-color: rgb(30, 0, 32); margin: 20px;">
+
+
+
+
+                            <div class=" card" style="width: auto;margin: 8px;">
+
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Reserva de {{appoint.user}}</h5>
+                                    <p>Servicio : {{appoint.service}}</p>
+
+                                    <p>Fecha de Reserva : {{appoint.datetime_ordered|date:"l d F Y"}}</p>
+                                    <p>Horario de Reserva : {{appoint.datetime_ordered|date:"g:i a"}}
+                                    </p>
+                                    <span>Solicitud realizada el día {{appoint.time_ordered}}</span>
+                                    <br>
+                                    <a onclick="deleteAppoint({{appoint.id}})" class="btn btn-primary mt-3">Eliminar</a>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        {%endfor%}
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-    <div class="container p-3 mt-3">
+    <div class="container pt-3 mt-3">
 
         <!-- Button trigger modal -->
         <button style="margin: 10px;" type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -228,7 +296,7 @@
                                 {{formService.name|linebreaks}}
                                 <p><label>Precio:</label></p>
                                 {{formService.precio|linebreaks}}
-                                <!-- <input class="form-control" autofocus type="text" name="nombre" placeholder="Nombre"> -->
+
                             </div>
 
                             <div class="modal-footer">
@@ -252,7 +320,8 @@
             {% for servicio in servicios %}
             <ul>
 
-                <li>{{servicio.name}} ${{servicio.precio}}<a href="" role="button">✖ </a>
+                <li>{{servicio.name}} ${{servicio.precio}}<a href="{% url 'deleteservice' servicio.id %}"
+                        role="button">✖ </a>
                 </li>
             </ul>
             {%endfor%}

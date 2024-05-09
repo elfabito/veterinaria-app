@@ -36,13 +36,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="">Servicios</a>
+                    </li> -->
+                    {% if request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'productosList' %}">Productos</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="">Servicios</a>
-                    </li>
-                    {% if request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'reservas'%}">Reservas</a>
                     </li>
@@ -60,8 +61,10 @@
                                 <strong>{{ user.first_name }}</strong>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="dropdownUser1">
-                                {% if user.is_veterinario or user.is_provedor %}
+                                {% if user.is_veterinario %}
                                 <li><a class="dropdown-item" href="{% url 'dashboard' %}">Configuración</a></li>
+                                {% elif user.is_provedor %}
+                                <li><a class="dropdown-item" href="{% url 'productos' %}">Configuración</a></li>
                                 {% endif %}
                                 <li><a class="dropdown-item" href="{% url 'profile' %}">Perfil</a></li>
                                 <li>

@@ -30,11 +30,15 @@
             <i class='bx bx-menu' id="btn"></i>
         </div>
         <ul class="nav-list" style="padding-left: 0px;">
-            <li>
+            <!-- <li>
                 <i class='bx bx-search'></i>
                 <input type="text" placeholder="Search...">
                 <span class="tooltip">Search</span>
-            </li>
+            </li> -->
+
+
+
+            {% if request.user.is_veterinario %}
             <li>
                 <a href="{% url 'dashboard' %}">
                     <i class='bx bx-grid-alt'></i>
@@ -42,14 +46,6 @@
                 </a>
                 <span class="tooltip">Home</span>
             </li>
-            <li>
-                <a href="{% url 'productos' %}">
-                    <i class='bx bx-folder'></i>
-                    <span class="links_name">Productos</span>
-                </a>
-                <span class="tooltip">Productos</span>
-            </li>
-            {% if request.user.is_veterinario %}
             <li>
                 <a href="{% url 'usuarios' %}">
                     <i class='bx bx-user'></i>
@@ -74,7 +70,13 @@
 
 
             {%endif%}
-
+            <li>
+                <a href="{% url 'productos' %}">
+                    <i class='bx bx-folder'></i>
+                    <span class="links_name">Productos</span>
+                </a>
+                <span class="tooltip">Productos</span>
+            </li>
             <li class="profile">
                 <div class="profile-details">
                     <img src="{% static 'logo1.png' %}" alt="profileImg">

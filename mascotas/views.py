@@ -21,7 +21,8 @@ from .Carrito import *
 from django.core.mail import send_mail
 from django.conf import settings
 from .utils import render_to_pdf
-from django.contrib.auth.decorators import user_passes_test
+from django.utils import timezone
+
 
 
 
@@ -92,15 +93,20 @@ def register(request):
     
 @csrf_exempt
 def profile(request):
+    datetimenow = timezone.now()
     propietario = CustomUser.objects.get(pk=request.user.id) 
-    appointments = Appointment.objects.all().order_by('datetime')
-    appforapproved = Appointment.objects.filter(approved=False,canceled=False).order_by('datetime')
-    appapproved = Appointment.objects.filter(approved=True).order_by('datetime')
-    appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime')
-    approved = appointments.filter(approved=True).count()
-    canceled = appointments.filter(canceled=True).count()
-    forapproved = appointments.count() - approved - canceled
+    
+    appforapproved = Appointment.objects.filter(approved=False,canceled=False, user=request.user,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')
+    appapproved = Appointment.objects.filter(approved=True, user=request.user,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')
+    appcanceled = Appointment.objects.filter(canceled=True, user=request.user).order_by('datetime_ordered')
+    approved =  appapproved.count()
+    canceled = appcanceled.count()
+    forapproved = appforapproved.count()
     mascotas = Mascota.objects.filter(propietario=propietario)
+    
+    appointments_pass = Appointment.objects.filter(user=request.user,datetime_ordered__lt=datetimenow).order_by('datetime_ordered')
+    passcount = Appointment.objects.filter(user=request.user,datetime_ordered__lt=datetimenow).count()
+    
     if request.method == "POST":
                 
          
@@ -140,27 +146,31 @@ def profile(request):
             provedor = Provedor.objects.get(provedor=propietario)
             return render(request, "profile.html", {"mascotas":mascotas, "provedor":provedor} )
         else:
-            return render(request, "profile.html", {"mascotas":mascotas,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved})
+            return render(request, "profile.html", {"passcount":passcount,"datetimenow":datetimenow,"appointments_pass":appointments_pass,"mascotas":mascotas,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved})
     
 
 def dashboard(request):
+    datetimenow = timezone.now()
     #Ultimos 3 usuarios, provedores , reservas y productos 
-    usuarios = CustomUser.objects.order_by('-id')[:3]
+    usuarios = CustomUser.objects.filter(is_veterinario=False, is_provedor=False).order_by('-id')[:3]
     provedores = Provedor.objects.order_by('-idProvedor')[:3]
     productos =  Producto.objects.order_by('-idProducto')[:3]
-    reservas = Appointment.objects.filter(approved=True).order_by('id')[:3]
+    
+    appapproved = Appointment.objects.filter(approved=True,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')[:3]
+    appforapproved = Appointment.objects.filter(approved=False,canceled=False,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')[:3]
+    datetimenow = datetime.datetime.now()
     if request.method == "POST":
         pass
     else:
         if request.user.is_veterinario or request.user.is_provedor:
-            return render ( request, "adminPanel/dashboard_home.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos, "reservas" : reservas} )
+            return render ( request, "adminPanel/dashboard_home.html", {"provedores":provedores, "usuarios":usuarios, "productos": productos, "appapproved" : appapproved, "appforapproved": appforapproved, "datetimenow" : datetimenow} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
         
     
 @csrf_exempt
 def provedores(request):
-    usuarios = CustomUser.objects.all()
+  
     provedores = Provedor.objects.all()
     if request.method == "POST":
         nombre = request.POST["first_name"].capitalize()
@@ -283,14 +293,28 @@ class ListProductsPdf(View):
         pdf = render_to_pdf('pdf/productos_pdf.html', data)
         return HttpResponse(pdf, content_type='application/pdf')
 
+class ListProvedoresPdf(View):
+    def get(self,request, *args, **kwargs):
+        provedores = Provedor.objects.all()
+        data = {
+            'provedores' : provedores
+        }
+        pdf = render_to_pdf('pdf/provedores_pdf.html', data)
+        return HttpResponse(pdf, content_type='application/pdf')
      
 class ListReservasPdf(View):
     def get(self,request, *args, **kwargs):
-        reservas = Appointment.objects.all()
-        appapproved = Appointment.objects.filter(approved=True).order_by('datetime')
-        appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime')
-        appforapproved = Appointment.objects.filter(approved=False,canceled=False).order_by('datetime')
+        datetimenow = timezone.now()
+        
+        appforapproved = Appointment.objects.filter(approved=False,canceled=False,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')
+        appapproved = Appointment.objects.filter(approved=True,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')
+        
+        appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime_ordered')
+        
+        appointments_pass = Appointment.objects.filter(datetime_ordered__lt=datetimenow).order_by('datetime_ordered')
+        
         data = {
+            'appointments_pass' : appointments_pass,
             'appapproved' : appapproved,
             'appcanceled' : appcanceled,
             'appforapproved' : appforapproved
@@ -432,7 +456,7 @@ def reservas(request):
             user = user,
             comment=comment,
             service=service_obj,            
-            datetime = formatted_datetime,
+            datetime_ordered = formatted_datetime,
             
         )
         recipients = [user.email]
@@ -452,7 +476,14 @@ def allCat(request):
     categorias = Category.objects.all()
     return JsonResponse([categoria.serialize() for categoria in categorias], safe=False)
 
-
+def deleteServicio(request,id):
+    try:
+        servicio = Service.objects.get(pk=id)
+        servicio.delete()
+        return HttpResponseRedirect(reverse("adminreservas"),{"message":messages.success(request, "Servicio eliminado")})
+    except Category.DoesNotExist:
+        messages.error(request, "Servicio no existe")
+        return render(request, "adminPanel/reservas_control.html")
 def deleteMascota(request,id):
     try:
         mascota = Mascota.objects.get(pk=id)
@@ -501,15 +532,20 @@ def deleteProvedor(request, id):
         return render(request, "provedores.html")
     
 def adminreservas(request):
-    appointments = Appointment.objects.all().order_by('datetime')
-    appforapproved = Appointment.objects.filter(approved=False,canceled=False).order_by('datetime')
-    appapproved = Appointment.objects.filter(approved=True).order_by('datetime')
-    appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime')
-    approved = appointments.filter(approved=True).count()
-    canceled = appointments.filter(canceled=True).count()
-    forapproved = appointments.count() - approved - canceled
+    datetimenow = timezone.now()
+    
+    appforapproved = Appointment.objects.filter(approved=False,canceled=False,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')
+    appapproved = Appointment.objects.filter(approved=True,datetime_ordered__gte=datetimenow).order_by('datetime_ordered')
+    appcanceled = Appointment.objects.filter(canceled=True).order_by('datetime_ordered')
+    approved = appapproved.count()
+    canceled = appcanceled.count()
+    forapproved = appforapproved.count()
     formService = ServiceForm()
     servicios = Service.objects.all()
+    
+    appointments_pass = Appointment.objects.filter(datetime_ordered__lt=datetimenow).order_by('datetime_ordered')
+    passcount = Appointment.objects.filter(datetime_ordered__lt=datetimenow).count()
+    
     if request.method == "POST":
         nombre = request.POST["name"]
         precio = request.POST["precio"]
@@ -524,7 +560,7 @@ def adminreservas(request):
         return HttpResponseRedirect(reverse("adminreservas"),{"message":messages.success(request, "Servicio creado correctamente")})
     else:
         if request.user.is_veterinario:
-            return render ( request, "adminPanel/reservas_control.html", {"servicios":servicios,"formService":formService,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
+            return render ( request, "adminPanel/reservas_control.html", {"datetimenow":datetimenow,"passcount":passcount,"appointments_pass":appointments_pass,"servicios":servicios,"formService":formService,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved} )
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
 
@@ -571,7 +607,7 @@ def editProducto(request, id):
             
         return HttpResponseRedirect(reverse("productos"))
     
-  
+@login_required  
 def productosList(request):
     
     total = 0
@@ -580,7 +616,7 @@ def productosList(request):
             for key, value in request.session["carrito"].items():
                 total += int(value["precio"])
     productos = Producto.objects.all().order_by('date')        
-    return render(request, 'productos_list.html',{ "total_carrito": total,"productos": productos })      
+    return render(request, 'productos_list.html',{ "total_carrito": total,"productos": productos,  "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY  })      
        
 
 @login_required
@@ -608,19 +644,19 @@ def reservaUser(request, id):
         appointment.save()
         
         if appointment.approved:
-            hora_y_media_despues =  appointment.datetime + datetime.timedelta(hours=1, minutes=30)
+            hora_y_media_despues =  appointment.datetime_ordered + datetime.timedelta(hours=1, minutes=30)
             print(hora_y_media_despues.strftime("%Y-%m-%dT%H:%M:%S%z"))
-            print(appointment.datetime.strftime("%Y-%m-%dT%H:%M:%S%z"))
+            print(appointment.datetime_ordered.strftime("%Y-%m-%dT%H:%M:%S%z"))
 
             #Crea Evento de GOOGLE Calendar cuando se aprueba la reserva
             calendar.create_event(f"Reserva con {appointment.user}",
-                                  appointment.datetime.strftime("%Y-%m-%dT%H:%M:%S%z"),
+                                  appointment.datetime_ordered.strftime("%Y-%m-%dT%H:%M:%S%z"),
                                   hora_y_media_despues.strftime("%Y-%m-%dT%H:%M:%S%z"),
                                   "America/Argentina/Buenos_Aires",recipients)
             
             send_mail(
-    		subject=f'Nueva reserva de {user.first_name} esperando por el pago',
-    		message=comment,
+    		subject=f'Reserva realizada con exito! de {appointment.user.first_name} ...esperando por el pago',
+    		message="Realize el pago por favor, comuniquese a la brevedad",
     		from_email=settings.EMAIL_HOST_USER,
     		recipient_list= recipients)
             # calendar.create_event("Hola ","2024-04-15T15:30:00+02:00","2024-04-15T16:00:00+02:00","America/Argentina/Buenos_Aires",["example@gmail.com"])
@@ -665,6 +701,36 @@ def create_checkout_session(request, id):
             )
     return JsonResponse({"sessionId": checkout_session.id})
 
+# PAYMENT STRIPE CARRITO
+@login_required
+@csrf_exempt
+def create_checkout_session_carrito(request):
+    carrito = Carrito(request)
+    
+    user = CustomUser.objects.get(id= request.user.id)
+    stripe.api_key = settings.STRIPE_SECRET_KEY 
+
+    checkout_session = stripe.checkout.Session.create(
+            customer_email = user.email,
+            payment_method_types = ['card'],
+            line_items=[
+                {
+                    'price_data':{
+                        'currency': 'USD',
+                        'product_data': {
+                            'name': "Total Carrito"
+                        },
+                        'unit_amount': int((carrito.totalCarrito(request)) * 100)
+                    },
+                    'quantity': 1
+                }
+            ],
+            mode= 'payment',
+        
+            success_url= request.build_absolute_uri(reverse("payment_success_carrito")) + "?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=request.build_absolute_uri(reverse("payment_failed_carrito")) + "?session_id={CHECKOUT_SESSION_ID}",
+            )
+    return JsonResponse({"sessionId": checkout_session.id})
 
 def payment_success(request, id):
   return(request, 'payment_success.html')
@@ -716,7 +782,7 @@ def create_payment_carrito(request):
         },
         "redirect_urls": {
             "return_url": request.build_absolute_uri(reverse('execute_payment')),
-            "cancel_url": request.build_absolute_uri(reverse('payment_failed')),
+            "cancel_url": request.build_absolute_uri(reverse('payment_failed_carrito')),
         },
         "transactions": [
             {
@@ -754,13 +820,13 @@ def agregar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = Producto.objects.get(idProducto=producto_id)
     carrito.agregarProducto(producto)
-    return redirect("productdetail",producto_id)
+    return redirect("productosList")
 
 def eliminar_producto(request, producto_id):
     carrito = Carrito(request)
     producto = Producto.objects.get(idProducto=producto_id)
     carrito.eliminarProducto(producto)
-    return redirect("productdetail", producto_id)
+    return redirect("productosList")
 
 def restar_producto(request, producto_id):
     carrito = Carrito(request)
