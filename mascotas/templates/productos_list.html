@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 
-
 {% block title %}Todos los productos{% endblock %}
 
 {% block script %}
@@ -11,10 +10,12 @@
 
 {% block body %}
 <div class="container text-center justify-content-center">
-    <div class=" row mt-3">
-        <div class="col-12 col-md-6 mb-4" style="margin-bottom: 60px;" id="list">
+    <div class="row mt-3 justify-content-center">
+        <div class="col-12 col-md-6 mb-4 text-center">
+            <!-- Agregamos 'text-center' para centrar el contenido en dispositivos móviles -->
             {% for producto in productos %}
-            <div id="productos">
+            <div id="productos" class="d-inline-block text-center">
+                <!-- Agregamos 'd-inline-block' y 'text-center' para centrar el contenido en dispositivos móviles -->
                 <img style="object-fit: cover; height: 220px; width: 220px;" src="{{producto.image.url }}" width="120px"
                     alt="">
                 <div id="content">

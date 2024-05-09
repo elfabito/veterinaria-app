@@ -11,73 +11,66 @@
 
 {% block body %}
 <div class="container text-center">
-    <div class="row align-items-center">
-
+    <div class="row justify-content-center align-items-center">
         <div class="col-12 col-md-6 mt-3 pt-3">
-            <div class="card" style="width: 18rem; margin-bottom: 50px;">
-                <img src="{{ producto.image.url }}" style="object-fit: cover" width="250px" ; height="250px"
+            <div class="card mx-auto" style="width: 18rem; margin-bottom: 50px;">
+                <img src="{{ producto.image.url }}" style="object-fit: cover" width="250px" height="250px"
                     class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{producto.nombre}}</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of
-                        the
-                        card's
-                        content.</p>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                        card's content.</p>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">{{producto.categoria}}</li>
                     <li class="list-group-item">{{producto.precio}}</li>
-
                 </ul>
                 <div class="card-body">
                     <a href="{% url 'agregar_producto' producto.idProducto %}" class="btn btn-primary">Agregar al
                         carrito</a>
-
                 </div>
             </div>
-
         </div>
         {% if request.user.is_authenticated %}
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6 mb-3">
             {% include "carrito.html" %}
         </div>
         {% endif %}
     </div>
-
 </div>
 
 <script>
-    var stripe = Stripe('{{stripe_publishable_key}}')
-    var checkoutButton = document.getElementById("carritocheckout-button")
+    var stripe = Stripe('{{stripe_publishable_key}}');
+    var checkoutButton = document.getElementById("carritocheckout-button");
 
     try {
         checkoutButton.addEventListener("click", function () {
-            checkoutButton.innerHTML = "Processing <i class='fas fa-spinner fa-spin'></i>"
-            var email = "{{request.user.email}}"
+            checkoutButton.innerHTML = "Processing <i class='fas fa-spinner fa-spin'></i>";
+            var email = "{{request.user.email}}";
             fetch("/create-checkout-session-carrito", {
                 method: "POST",
                 body: JSON.stringify({ email: email })
             })
                 .then(function (response) {
-                    console.log(response)
-                    console.log(stripe)
-                    return response.json()
+                    console.log(response);
+                    console.log(stripe);
+                    return response.json();
                 })
                 .then(function (session) {
-                    return stripe.redirectToCheckout({ sessionId: session.sessionId })
+                    return stripe.redirectToCheckout({ sessionId: session.sessionId });
                 })
                 .then(function (result) {
                     if (result.error) {
-                        alert(result.error.message)
+                        alert(result.error.message);
                     }
                 })
                 .catch(function (error) {
-                    console.log("error", error)
-                })
-        })
+                    console.log("error", error);
+                });
+        });
     }
     catch (error) {
-        console.log(error)
+        console.log(error);
     }
 </script>
 {% endblock %}
