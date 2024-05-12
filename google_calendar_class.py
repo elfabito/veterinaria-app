@@ -1,12 +1,16 @@
+import json
 import os.path
 import datetime as dt
-
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-
+env_path = Path('.', '.env')
+load_dotenv(dotenv_path=env_path)
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
 class GoogleCalendarManager:
@@ -17,13 +21,15 @@ class GoogleCalendarManager:
         creds = None
 
         if os.path.exists("token.json"):
-            creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+            token = json.loads(os.getenv['TOKEN'])
+            creds = Credentials.from_authorized_user_file(token, SCOPES)
 
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+                credentials = json.loads(os.getenv['CREDENTIALS'])
+                flow = InstalledAppFlow.from_client_secrets_file(credentials, SCOPES)
                 creds = flow.run_local_server(port=0)
 
             # Save the credentials for the next run

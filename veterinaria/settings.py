@@ -29,7 +29,7 @@ load_dotenv(dotenv_path=env_path)
 SECRET_KEY = 'django-insecure-91bh)+oue_*-k*76*#fe_ae)u-4$1)!6g=)ahp52%ew)f(p6vi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['.vercel.app']
 SITE_ID=1
@@ -84,11 +84,13 @@ TEMPLATES = [
         },
     },
 ]
-STATICFILES_DIRS = (
-  os.path.join(BASE_DIR, 'mascotas/static'),
-)
-WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'mascotas/static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+
+WSGI_APPLICATION = 'veterinaria.wsgi.application'
+STATIC_URL = '/static/'
 #Stripe API KEYS
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
@@ -164,7 +166,7 @@ USE_L10N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media') 
 MEDIA_URL = '/media/'
