@@ -7,7 +7,8 @@ python3.9 -m venv venv
 source venv/bin/activate
 
 # install all deps in the venv
-python3.9 -m pip install 
+python3.9 -m pip install pip
+
 
 pip install python-dotenv
 
