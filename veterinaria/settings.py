@@ -87,7 +87,7 @@ TEMPLATES = [
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'mascotas/static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'mascotas/static')
 
 WSGI_APPLICATION = 'veterinaria.wsgi.application'
 STATIC_URL = '/static/'

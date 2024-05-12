@@ -5,4 +5,4 @@ Django==4.2.4
 protobuf==5.26.1
 python-dotenv==1.0.1
 # stripe==9.4.0
-# xhtml2pdf==0.2.15
+xhtml2pdf==0.2.15
