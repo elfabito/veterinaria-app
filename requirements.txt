@@ -4,5 +4,5 @@ google_auth_oauthlib==1.2.0
 # paypalrestsdk==1.13.3
 protobuf==5.26.1
 python-dotenv==1.0.1
-stripe==9.4.0
+# stripe==9.4.0
 xhtml2pdf==0.2.15
