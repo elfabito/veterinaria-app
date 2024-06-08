@@ -4,7 +4,7 @@ echo "BUILD START"
 python3.9 -m venv venv
 
 # activate the virtual environment
-source venv/scripts/activate
+source venv/bin/activate
 
 # install all deps in the venv
 python3.9 -m pip install pip
