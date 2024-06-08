@@ -16,7 +16,7 @@
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
+      "src": "mascotas/static/(.*)",
       "dest": "/static/$1"
     },
     {

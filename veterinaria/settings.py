@@ -72,7 +72,7 @@ SITE_ID=1
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'mascotas/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
