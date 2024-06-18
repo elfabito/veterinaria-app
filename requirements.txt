@@ -6,4 +6,4 @@ Django==4.2.4
 #python-dotenv==1.0.1
 #stripe==9.4.0
 #xhtml2pdf==0.2.15
-psycopg2-binary
+#psycopg2-binary
