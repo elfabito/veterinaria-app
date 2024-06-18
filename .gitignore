@@ -9,7 +9,8 @@ db.sqlite3
 media
 credentials.json
 token.json
-
+encode_credentials.py
+create_secret_key.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

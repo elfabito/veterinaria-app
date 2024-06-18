@@ -9,6 +9,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import base64
 env_path = Path('.', '.env')
 load_dotenv(dotenv_path=env_path)
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
@@ -19,22 +20,29 @@ class GoogleCalendarManager:
 
     def _authenticate(self):
         creds = None
-
-        if os.path.exists("token.json"):
-            token = json.loads(os.getenv['TOKEN'])
-            creds = Credentials.from_authorized_user_file(token, SCOPES)
+         # Decode the credentials and token from environment variables
+        credentials_json = base64.b64decode(os.getenv('CREDENTIALS_BASE64')).decode('utf-8')
+        token_json = base64.b64decode(os.getenv('TOKEN_BASE64')).decode('utf-8')    
+        
+        if token_json:
+            creds = Credentials.from_authorized_user_info(json.loads(token_json), SCOPES)
+        
+        
+        # For Local Env
+        # if os.path.exists("token.json"):
+        #     token = json.loads(os.getenv('TOKEN'))
+        #     creds = Credentials.from_authorized_user_file(token, SCOPES)
 
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                credentials = json.loads(os.getenv['CREDENTIALS'])
-                flow = InstalledAppFlow.from_client_secrets_file(credentials, SCOPES)
+                creds_info = json.loads(credentials_json)
+                flow = InstalledAppFlow.from_client_config(creds_info, SCOPES)
                 creds = flow.run_local_server(port=0)
 
-            # Save the credentials for the next run
-            with open("token.json", "w") as token:
-                token.write(creds.to_json())
+                # Update the token in the environment variable
+                os.environ['TOKEN_BASE64'] = base64.b64encode(creds.to_json().encode('utf-8')).decode('utf-8')
 
         return build("calendar", "v3", credentials=creds)
 

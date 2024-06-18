@@ -26,7 +26,7 @@ load_dotenv(dotenv_path=env_path)
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-91bh)+oue_*-k*76*#fe_ae)u-4$1)!6g=)ahp52%ew)f(p6vi'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -90,7 +90,7 @@ STATICFILES_DIRS = os.path.join(BASE_DIR, 'mascotas/static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'mascotas/static')
 
 WSGI_APPLICATION = 'veterinaria.wsgi.application'
-STATIC_URL = '/static/'
+
 #Stripe API KEYS
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
@@ -123,9 +123,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': 'KgeCPhfCRRWMTWDTtdLfpNmxzIEQPTAA',
-        'HOST': 'monorail.proxy.rlwy.net',
-        'PORT': '32467'
+        'PASSWORD': str(os.getenv('PGPASS')),
+        'HOST': str(os.getenv('PGHOST')),
+        'PORT': str(os.getenv('PGPORT'))
     }
 }
 
