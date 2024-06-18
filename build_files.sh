@@ -9,8 +9,8 @@ source venv/bin/activate
 # install all deps in the venv
 python3.9 -m pip install pip
 
-pip install psycopg2-binary
-pip install python-dotenv
+# pip install psycopg2-binary
+# pip install python-dotenv
 
 pip install -r requirements.txt
 
