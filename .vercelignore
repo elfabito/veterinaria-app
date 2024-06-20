@@ -1,0 +1,12 @@
+_.log
+_.md
+\*.pyc
+**pycache**/
+venv/
+.git/
+.github/
+tests/
+docs/
+node_modules/
+build/
+dist/
