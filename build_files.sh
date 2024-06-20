@@ -13,7 +13,7 @@ python3.9 -m pip install pip
 # pip install python-dotenv
 
 # pip install -r requirements.txt
-pip install django
+
 # collect static files using the Python interpreter from venv
 
 python manage.py collectstatic --noinput
