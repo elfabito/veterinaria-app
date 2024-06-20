@@ -1,9 +1,6 @@
-Django==4.2.4
-#google_api_python_client==2.125.0
-#google_auth_oauthlib==1.2.0
-#paypalrestsdk==1.13.3
-#protobuf==5.26.1
-#python-dotenv==1.0.1
-#stripe==9.4.0
-#xhtml2pdf==0.2.15
-#psycopg2-binary
+asgiref==3.8.1
+Django==5.0.6
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
+sqlparse==0.5.0
+tzdata==2024.1
