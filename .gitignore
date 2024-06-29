@@ -11,6 +11,8 @@ credentials.json
 token.json
 encode_credentials.py
 create_secret_key.py
+build_files.sh
+vercel.json
 
 # Byte-compiled / optimized / DLL files
 **/__pycache__/

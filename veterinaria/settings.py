@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['veterinariaApp.azurewebsites.net']
 SITE_ID=1
 
 # Application definition
@@ -87,33 +87,33 @@ TEMPLATES = [
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'mascotas/static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'mascotas/static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
 #Stripe API KEYS
-# STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
-# STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 # #PayPal API KEYS
-# PAYPAL_MODE = os.getenv("PAYPAL_MODE")
-# PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
-# PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
+PAYPAL_MODE = os.getenv("PAYPAL_MODE")
+PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
+PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
 
 # #Google Calendar API KEYS
-# GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'credentials.json'
-# GOOGLE_TOKEN_FILE = 'token.json'
-# OAUTH2_CLIENT_ID = os.getenv('OAUTH2_CLIENT_ID')
-# OAUTH2_CLIENT_SECRET = os.getenv('OAUTH2_CLIENT_SECRET')
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'credentials.json'
+GOOGLE_TOKEN_FILE = 'token.json'
+OAUTH2_CLIENT_ID = os.getenv('OAUTH2_CLIENT_ID')
+OAUTH2_CLIENT_SECRET = os.getenv('OAUTH2_CLIENT_SECRET')
 
-# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = str(os.getenv('USER_MAIL'))
-# EMAIL_HOST_PASSWORD = str(os.getenv('USER_MAIL_PASSWORD'))
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
-# DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = str(os.getenv('USER_MAIL'))
+EMAIL_HOST_PASSWORD = str(os.getenv('USER_MAIL_PASSWORD'))
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -121,8 +121,8 @@ WSGI_APPLICATION = 'veterinaria.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
+        'NAME': 'veterina-database',
+        'USER': 'slqgotmqhb',
         'PASSWORD': str(os.getenv('PGPASS')),
         'HOST': str(os.getenv('PGHOST')),
         'PORT': str(os.getenv('PGPORT'))
