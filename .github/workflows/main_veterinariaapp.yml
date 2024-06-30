@@ -2,7 +2,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 # More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - veterinariaapp
+name: Build and deploy Python app to Azure Web App - veterinariaApp
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.9'
 
       - name: Create and start virtual environment
         run: |
@@ -65,14 +65,14 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_48F9D9B9EC424BE6860AC818F453BEF8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_376ED039DEAF4E949EECB78507EB8565 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0A64E8A7B2B9493FA133D00879BA64B6 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_C1CFA741FE474C8AA6B04D4792519FCC }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_782F807BD29049009A85D2EA6CE831C8 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_05A09EFD71654C79BD3B1CB93C985F01 }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'veterinariaapp'
+          app-name: 'veterinariaApp'
           slot-name: 'Production'
           
