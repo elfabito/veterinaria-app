@@ -5,7 +5,10 @@ python-dotenv==1.0.1
 sqlparse==0.5.0
 tzdata==2024.1
 xhtml2pdf==0.2.15
-google_api_python_client==2.125.0
-google_auth_oauthlib==1.2.0
+google-api-python-client==2.125.0
+google-auth==2.30.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.0
 paypalrestsdk==1.13.3
 stripe==9.4.0
+whitenoise==6.7.0
