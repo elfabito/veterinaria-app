@@ -61,6 +61,8 @@ class UserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     
     username = None
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     is_veterinario = models.BooleanField(default=False)
     is_provedor = models.BooleanField(default=False)
     email = models.EmailField(db_index=True, unique=True, max_length=250)
@@ -80,6 +82,8 @@ class CustomUser(AbstractUser):
             "email": self.email,
             "is_veterinario" : self.is_veterinario,
             "is_provedor": self.is_provedor,
+            "is_superuser" : self.is_superuser,
+            "is_staff" : self.is_staff,
             "first_name": self.first_name,
             "last_name": self.last_name,
                         

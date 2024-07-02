@@ -345,7 +345,7 @@ def usuarios(request):
                 "message": "Passwords must match."
             })
         
-
+        
         # Attempt to create new User and Provedor for that user
         try:
             user = CustomUser.objects.create(
@@ -353,7 +353,8 @@ def usuarios(request):
                 first_name=nombre, 
                 last_name=apellido, 
                 email=email, 
-                 
+                is_superuser=veterinario, 
+                is_staff=veterinario,
                 is_veterinario=veterinario
                 )
             user.set_password(password)
@@ -531,6 +532,7 @@ def deleteProvedor(request, id):
         messages.error(request, "Provedor no existe")
         return render(request, "provedores.html")
     
+@csrf_exempt    
 def adminreservas(request):
     datetimenow = timezone.now()
     
