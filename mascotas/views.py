@@ -469,8 +469,8 @@ def reservas(request):
     		from_email=settings.EMAIL_HOST_USER,
     		recipient_list=recipients)
         new_appointment.save()
-       
-        return HttpResponseRedirect(reverse("reservas"),{"message":messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")})
+        messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")
+        return redirect(reverse("reservas"))
 
 
 def allCat(request):
