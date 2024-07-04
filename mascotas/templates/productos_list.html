@@ -16,7 +16,7 @@
             {% for producto in productos %}
             <div id="productos" class="d-inline-block text-center">
                 <!-- Agregamos 'd-inline-block' y 'text-center' para centrar el contenido en dispositivos móviles -->
-                <img style="object-fit: cover; height: 220px; width: 220px;" src="{{ MEDIA_URL }}{{ producto.image.name }}" width="120px"
+                <img style="object-fit: cover; height: 220px; width: 220px;" src="{{ producto.image.url }}" width="120px"
                     alt="">
                 <div id="content">
                     <br>
