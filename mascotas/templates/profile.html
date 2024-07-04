@@ -352,7 +352,7 @@
                     {% for mascota in mascotas %}
                     <tr>
                         <td>
-                            {% if mascota.image %}<img src="{{ MEDIA_URL }}{{ mascota.image.url }}" alt="" width="35" height="35"
+                            {% if mascota.image %}<img src="{{ mascota.image.url }}" alt="" width="35" height="35"
                                 class="rounded-circle me-2">{%else%}<img src="static/custom.jpg" alt="" width="35"
                                 height="35" class="rounded-circle me-2">{%endif%}</td>
                         <td>{{mascota.nombre}}</td>

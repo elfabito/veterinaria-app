@@ -162,7 +162,7 @@
                     <td id="productname{{producto.idProducto}}">{{producto.nombre}}</td>
                     <td>{{producto.vendedor}} </td>
                     <td><img style="object-fit: cover; height: 120px; width: 120px;"
-                            id="productimg{{producto.idProducto}}" src="{{ MEDIA_URL }}{{ producto.image.url }}" alt="">
+                            id="productimg{{producto.idProducto}}" src="{{ producto.image.url }}" alt="">
                     </td>
                     <td id="productcat{{producto.idProducto}}">{{producto.categoria}}</td>
                     <td id="productdesc{{producto.idProducto}}">{{producto.descripcion}}</td>
