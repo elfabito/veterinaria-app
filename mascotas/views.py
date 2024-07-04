@@ -29,7 +29,7 @@ from django.utils import timezone
 
 def home(request):
     productos = Producto.objects.all()
-    return render(request, "home.html", {"productos":productos})
+    return render(request, "home.html", {"productos":productos, "MEDIA_URL": settings.MEDIA_URL,})
 
 @csrf_exempt
 def login_view(request):
@@ -144,9 +144,9 @@ def profile(request):
     else:
         if propietario.is_provedor :
             provedor = Provedor.objects.get(provedor=propietario)
-            return render(request, "profile.html", {"mascotas":mascotas, "provedor":provedor} )
+            return render(request, "profile.html", {"mascotas":mascotas, "provedor":provedor, "MEDIA_URL": settings.MEDIA_URL} )
         else:
-            return render(request, "profile.html", {"passcount":passcount,"datetimenow":datetimenow,"appointments_pass":appointments_pass,"mascotas":mascotas,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved})
+            return render(request, "profile.html", {"MEDIA_URL": settings.MEDIA_URL,"passcount":passcount,"datetimenow":datetimenow,"appointments_pass":appointments_pass,"mascotas":mascotas,"appforapproved":appforapproved,"appapproved": appapproved, "appcanceled":appcanceled, "count_approved":approved, "count_canceled": canceled,"count_forapproved":forapproved})
     
 
 def dashboard(request):
@@ -248,7 +248,7 @@ def productos(request):
                 "formCat" : formCat,
                 "categorias": categorias,
                 "productos": productos,
-                
+                "MEDIA_URL": settings.MEDIA_URL,
             })
     
     else:
@@ -260,7 +260,7 @@ def productos(request):
             "formCat" : formCat,
             "categorias": categorias,
             "productos": productos,
-           
+            "MEDIA_URL": settings.MEDIA_URL,
         })
         elif request.user.is_provedor:
             return render(request, "adminPanel/productos.html", {
@@ -268,7 +268,7 @@ def productos(request):
             "formCat" : formCat,
             "categorias": categorias,
             "productos": productosProvedor,
-           
+            "MEDIA_URL": settings.MEDIA_URL,
         })
         else:
             return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
@@ -583,7 +583,7 @@ def editProducto(request, id):
         return render(request, "productos.html")
     
     if request.method == "GET":
-           return render ( request, "product_detail.html", { "total_carrito": total,"producto": producto, "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY })
+           return render ( request, "product_detail.html", { "MEDIA_URL": settings.MEDIA_URL, "total_carrito": total,"producto": producto, "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY })
     elif request.method == "PUT":
         data = json.loads(request.body)
         nombre = data.get("nombre")
@@ -618,7 +618,7 @@ def productosList(request):
             for key, value in request.session["carrito"].items():
                 total += int(value["precio"])
     productos = Producto.objects.all().order_by('date')        
-    return render(request, 'productos_list.html',{ "total_carrito": total,"productos": productos,  "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY  })      
+    return render(request, 'productos_list.html',{"MEDIA_URL": settings.MEDIA_URL, "total_carrito": total,"productos": productos,  "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY  })      
        
 
 @login_required
