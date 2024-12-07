@@ -124,8 +124,10 @@ DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
+
 DATABASES = {
-     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': dj_database_url.parse(DATABASE_URL)
 }
 
 
