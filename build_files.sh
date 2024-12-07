@@ -12,7 +12,7 @@ python3.9 -m pip install pip
 # pip install psycopg2-binary
 # pip install python-dotenv
 
-# pip install -r requirements.txt
+pip install -r requirements.txt
 
 # collect static files using the Python interpreter from venv
 
