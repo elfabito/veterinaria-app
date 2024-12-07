@@ -2,12 +2,9 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "veterinaria/wsgi.py",
       "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.9"
-      }
+      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
     },
     {
       "src": "build_files.sh",
@@ -17,7 +14,6 @@
       }
     }
   ],
-
   "routes": [
     {
       "src": "/static/(.*)",
@@ -25,8 +21,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "api/index.py"
+      "dest": "veterinaria/wsgi.py"
     }
-  ],
-  "outputDirectory": "staticfiles"
+  ]
 }
