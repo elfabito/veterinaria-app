@@ -128,9 +128,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': str(os.getenv('PGPASS')),
-        'HOST': str(os.getenv('PGHOST')),
-        'PORT': str(os.getenv('PGPORT'))
+        'PASSWORD': os.getenv('PGPASS'),
+        'HOST': os.getenv('PGHOST'),
+        'PORT': os.getenv('PGPORT')
     }
 }
 
