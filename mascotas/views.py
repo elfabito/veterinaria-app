@@ -9,14 +9,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.http import JsonResponse
 from django.contrib import messages
 import json
-from google_calendar_class import *
+#from google_calendar_class import *
 import datetime
 from django.views import View
 import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-import paypalrestsdk
+#import paypalrestsdk
 from .Carrito import *
 from django.core.mail import send_mail
 from django.conf import settings
