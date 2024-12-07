@@ -68,7 +68,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'veterinaria.urls'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    os.getenv('ALLOWED_HOSTS', '').split(',')
+    str(os.getenv('ALLOWED_HOSTS', '').split(','))
 ]
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert alert-dark',
