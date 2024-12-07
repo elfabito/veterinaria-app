@@ -126,8 +126,8 @@ DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'veterina-database',
-        'USER': 'slqgotmqhb',
+        'NAME': 'railway',
+        'USER': 'postgres',
         'PASSWORD': str(os.getenv('PGPASS')),
         'HOST': str(os.getenv('PGHOST')),
         'PORT': str(os.getenv('PGPORT'))
