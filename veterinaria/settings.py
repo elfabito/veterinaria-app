@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mascotas',
     'django.contrib.sites',
-    'xhtml2pdf'
+    'xhtml2pdf',
+    'corsheaders',
 ]
 AUTH_USER_MODEL = 'mascotas.CustomUser'
 MIDDLEWARE = [
@@ -61,10 +62,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'veterinaria.urls'
-
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    os.getenv('ALLOWED_HOSTS', '').split(',')
+]
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert alert-dark',
     messages.INFO: 'alert alert-info',
