@@ -2,21 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "veterinaria-app/manage.py",
+      "src": "manage.py",
       "use": "@vercel/python"
-    },
-    {
-      "src": "staticfiles/**",
-      "use": "@vercel/static"
     }
   ],
   "functions": {
-    "api/*.py": {
+    "api/**.py": {
       "runtime": "python3.9"
     }
   },
   "routes": [
-    { "src": "/static/(.*)", "dest": "/staticfiles/$1" },
-    { "src": "/(.*)", "dest": "veterinaria-app/manage.py" }
-  ]
+    {
+      "src": "/(.*)",
+      "dest": "manage.py"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "veterinaria.settings"
+  }
 }
