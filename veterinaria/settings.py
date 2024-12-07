@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+import dj_database_url
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -124,14 +125,7 @@ DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': os.getenv('PGPASS'),
-        'HOST': os.getenv('PGHOST'),
-        'PORT': os.getenv('PGPORT')
-    }
+     'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
 
 

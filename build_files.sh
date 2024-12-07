@@ -15,7 +15,7 @@ python3.9 -m pip install pip
 pip install -r requirements.txt
 pip install django-environ
 # collect static files using the Python interpreter from venv
-
+pip install dj-database-url
 python manage.py collectstatic --noinput
 python manage.py makemigrations
 python manage.py migrate
