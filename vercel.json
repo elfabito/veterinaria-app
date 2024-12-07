@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "manage.py",
+      "src": "veterinaria-app/manage.py",
       "use": "@vercel/python"
     },
     {
@@ -17,6 +17,6 @@
   },
   "routes": [
     { "src": "/static/(.*)", "dest": "/staticfiles/$1" },
-    { "src": "/(.*)", "dest": "manage.py" }
+    { "src": "/(.*)", "dest": "veterinaria-app/manage.py" }
   ]
 }
