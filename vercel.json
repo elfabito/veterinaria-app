@@ -2,27 +2,16 @@
   "version": 2,
   "builds": [
     {
-      "src": "veterinaria/wsgi.py",
-      "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
+      "src": "manage.py",
+      "use": "@vercel/python"
     },
     {
-      "src": "build_files.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "staticfiles_build"
-      }
+      "src": "staticfiles/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "mascotas/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "veterinaria/wsgi.py"
-    }
-  ],
-  "outputDirectory": "staticfiles_build"
+    { "src": "/static/(.*)", "dest": "/staticfiles/$1" },
+    { "src": "/(.*)", "dest": "manage.py" }
+  ]
 }

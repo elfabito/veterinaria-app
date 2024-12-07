@@ -12,5 +12,3 @@ google-auth-oauthlib==1.2.0
 paypalrestsdk==1.13.3
 stripe==9.4.0
 whitenoise==6.7.0
-django-storages==1.14.3
-azure-storage-blob==12.20.0
