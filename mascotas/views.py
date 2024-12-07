@@ -12,7 +12,7 @@ import json
 #from google_calendar_class import *
 import datetime
 from django.views import View
-import stripe
+#import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
