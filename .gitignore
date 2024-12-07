@@ -11,7 +11,9 @@ credentials.json
 token.json
 encode_credentials.py
 create_secret_key.py
+google_calendar_class.py
 build_files.sh
+azure_storage.py
 vercel.json
 
 # Byte-compiled / optimized / DLL files
