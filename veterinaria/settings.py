@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+import dj_database_url
 from pathlib import Path
 import os
 from dotenv import load_dotenv
@@ -33,7 +34,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 SITE_ID=1
 
 # Application definition
@@ -47,7 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mascotas',
     'django.contrib.sites',
-    'xhtml2pdf'
+    'xhtml2pdf',
+    'corsheaders',
 ]
 AUTH_USER_MODEL = 'mascotas.CustomUser'
 MIDDLEWARE = [
@@ -59,9 +62,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'veterinaria.urls'
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = os.getenv('CORS', '').split(',')
 
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert alert-dark',
@@ -70,6 +76,7 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert alert-warning',
     messages.ERROR: 'alert alert-danger',
 }
+USE_X_FORWARDED_HOST = True
 
 SITE_ID=1
 TEMPLATES = [
@@ -97,25 +104,25 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
 #Stripe API KEYS
-STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
-STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+#STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
+#STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 # #PayPal API KEYS
-PAYPAL_MODE = os.getenv("PAYPAL_MODE")
-PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
-PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
+#PAYPAL_MODE = os.getenv("PAYPAL_MODE")
+#PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
+#PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
 
 # #Google Calendar API KEYS
-GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'credentials.json'
-GOOGLE_TOKEN_FILE = 'token.json'
-OAUTH2_CLIENT_ID = os.getenv('OAUTH2_CLIENT_ID')
-OAUTH2_CLIENT_SECRET = os.getenv('OAUTH2_CLIENT_SECRET')
+#GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = 'credentials.json'
+#GOOGLE_TOKEN_FILE = 'token.json'
+#OAUTH2_CLIENT_ID = os.getenv('OAUTH2_CLIENT_ID')
+#OAUTH2_CLIENT_SECRET = os.getenv('OAUTH2_CLIENT_SECRET')
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = str(os.getenv('USER_MAIL'))
-EMAIL_HOST_PASSWORD = str(os.getenv('USER_MAIL_PASSWORD'))
+#EMAIL_HOST_USER = str(os.getenv('USER_MAIL'))
+#EMAIL_HOST_PASSWORD = str(os.getenv('USER_MAIL_PASSWORD'))
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
@@ -123,15 +130,10 @@ DEFAULT_FROM_EMAIL = 'Patitas Contentas Team <noreply@patitascontentas.com>'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'veterina-database',
-        'USER': 'slqgotmqhb',
-        'PASSWORD': str(os.getenv('PGPASS')),
-        'HOST': str(os.getenv('PGHOST')),
-        'PORT': str(os.getenv('PGPORT'))
-    }
+    'default': dj_database_url.parse(DATABASE_URL)
 }
 
 

@@ -12,10 +12,12 @@ python3.9 -m pip install pip
 # pip install psycopg2-binary
 # pip install python-dotenv
 
-# pip install -r requirements.txt
+pip install -r requirements.txt
 
 # collect static files using the Python interpreter from venv
 
-python manage.py collectstatic --noinput
 
+python manage.py makemigrations --noinput
+python manage.py migrate --noinput
+python manage.py collectstatic --noinput
 echo "BUILD END"
