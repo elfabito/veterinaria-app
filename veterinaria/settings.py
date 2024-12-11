@@ -102,7 +102,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'mascotas', 'static'),
 ]
-STATIC_ROOT = 'staticfiles'
+STATIC_ROOT = 'staticfiles_build'
 WSGI_APPLICATION = 'veterinaria.wsgi.application'
 
 #Stripe API KEYS
