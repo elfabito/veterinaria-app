@@ -15,7 +15,7 @@ google_calendar_class.py
 build_files.sh
 azure_storage.py
 vercel.json
-
+staticfiles/
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
 *.py[cod]
