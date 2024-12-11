@@ -1,23 +1,13 @@
 echo "BUILD START"
 
-# create a virtual environment named 'venv' if it doesn't already exist
-python3.9 -m venv venv
+# Instala las dependencias del proyecto
+python3.9 -m pip install -r requirements.txt
 
-# activate the virtual environment
-source venv/bin/activate
-
-# install all deps in the venv
-python3.9 -m pip install pip
-
-# pip install psycopg2-binary
-# pip install python-dotenv
-
-pip install -r requirements.txt
-
-# collect static files using the Python interpreter from venv
-
-
+# Ejecuta las migraciones
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
+
+# Recolecta los archivos estáticos
 python manage.py collectstatic --noinput
+
 echo "BUILD END"
