@@ -13,11 +13,12 @@
     <div class="row mt-3 justify-content-center">
         <div class="col-12 col-md-6 mb-4 text-center">
             <!-- Agregamos 'text-center' para centrar el contenido en dispositivos móviles -->
+            {% if producto %}
             {% for producto in productos %}
             <div id="productos" class="d-inline-block text-center">
                 <!-- Agregamos 'd-inline-block' y 'text-center' para centrar el contenido en dispositivos móviles -->
-                <img style="object-fit: cover; height: 220px; width: 220px;" src="{{ producto.image.url }}" width="120px"
-                    alt="">
+                <img style="object-fit: cover; height: 220px; width: 220px;" src="{{ producto.image.url }}"
+                    width="120px" alt="">
                 <div id="content">
                     <br>
                     <h2><a href="{% url 'productdetail' producto.idProducto%}"
@@ -31,6 +32,7 @@
                 </div>
             </div>
             {% endfor %}
+            {% endif %}
         </div>
         {% if request.user.is_authenticated %}
         <div class="col-12 col-md-6 mb-8 mt-4 pt-3" style="margin-bottom: 30px;">

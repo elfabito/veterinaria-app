@@ -157,6 +157,7 @@
                 </tr>
             </thead>
             <tbody>
+                {% if producto %}
                 {% for producto in productos %}
                 <tr style="align-items: center; justify-content: center">
                     <td id="productname{{producto.idProducto}}">{{producto.nombre}}</td>
@@ -210,7 +211,7 @@
                 </tr>
 
                 {%endfor%}
-
+                {%endif%}
         </table>
         <div class="container "><a href="{% url 'all_products' %}" class="btn btn-primary"> Ver en PDF</a></div>
 
