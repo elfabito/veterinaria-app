@@ -222,64 +222,47 @@ def provedores(request):
 
 @csrf_exempt
 def productos(request):
-    form = ProductoForm(request.POST)
-    formCat = CategoryForm(request.POST)
+    form = ProductoForm(request.POST or None)
+    formCat = CategoryForm(request.POST or None)
     categorias = Category.objects.all()
+
+    provedor = None
+    productos = Producto.objects.all()
+    productosProvedor = None
+
     try:
+        # Buscar el proveedor
         provedor = Provedor.objects.get(provedor=request.user.id)
-        productos = Producto.objects.all()
+        productosProvedor = Producto.objects.filter(vendedor=provedor)
     except ObjectDoesNotExist:
         messages.warning(request, "No tienes un perfil de proveedor asociado.")
-        return HttpResponseRedirect(reverse("home"))
     except IntegrityError:
-            messages.warning(request=request,message="Hubo un problema intente mas tarde")
-            return HttpResponseRedirect(reverse("home"))
-    productosProvedor = Producto.objects.filter(vendedor=provedor)
+        messages.warning(request, "Hubo un problema, intente más tarde.")
+
+    #formularios
     if request.method == 'POST':
-        
         if form.is_valid():
             producto = form.save(commit=False)
-            imagen = request.FILES.get('imagefile')
-            producto.image = imagen
+            producto.image = request.FILES.get('imagefile')
             producto.vendedor = provedor
             producto.save()
-            return  HttpResponseRedirect(reverse("productos"))
+            messages.success(request, "Producto agregado con éxito.")
+            return HttpResponseRedirect(reverse("productos"))
         elif formCat.is_valid():
             formCat.save()
-            return  HttpResponseRedirect(reverse("productos"))
+            messages.success(request, "Categoría agregada con éxito.")
+            return HttpResponseRedirect(reverse("productos"))
         else:
-                
-            form = ProductoForm()
-            formCat = CategoryForm()
-            return render(request, "adminPanel/productos.html", {
-                "form": form,
-                "formCat" : formCat,
-                "categorias": categorias,
-                "productos": productos,
-                "MEDIA_URL": settings.MEDIA_URL,
-            })
-    
-    else:
-        form = ProductoForm()
-        formCat = CategoryForm()
-        if request.user.is_veterinario :
-            return render(request, "adminPanel/productos.html", {
-            "form": form,
-            "formCat" : formCat,
-            "categorias": categorias,
-            "productos": productos,
-            "MEDIA_URL": settings.MEDIA_URL,
-        })
-        elif request.user.is_provedor:
-            return render(request, "adminPanel/productos.html", {
-            "form": form,
-            "formCat" : formCat,
-            "categorias": categorias,
-            "productos": productosProvedor,
-            "MEDIA_URL": settings.MEDIA_URL,
-        })
-        else:
-            return JsonResponse({"error": "No tienes privilegio para entrar aqui."}, status=404)
+            messages.warning(request, "Por favor corrige los errores en el formulario.")
+
+    # Render
+    return render(request, "adminPanel/productos.html", {
+        "form": form,
+        "formCat": formCat,
+        "categorias": categorias,
+        "productos": productosProvedor if provedor else productos,
+        "MEDIA_URL": settings.MEDIA_URL,
+    })
         
    
 class ListUsuariosPdf(View):
