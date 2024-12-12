@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.http import JsonResponse
 from django.contrib import messages
 import json
+from django.core.exceptions import ObjectDoesNotExist
 #from google_calendar_class import *
 import datetime
 from django.views import View
@@ -227,6 +228,9 @@ def productos(request):
     try:
         provedor = Provedor.objects.get(provedor=request.user.id)
         productos = Producto.objects.all()
+    except ObjectDoesNotExist:
+        messages.warning(request, "No tienes un perfil de proveedor asociado.")
+        return HttpResponseRedirect(reverse("home"))
     except IntegrityError:
             messages.warning(request=request,message="Hubo un problema intente mas tarde")
             return HttpResponseRedirect(reverse("home"))
