@@ -170,7 +170,7 @@ def dashboard(request):
     
 @csrf_exempt
 def provedores(request):
-  
+    
     provedores = Provedor.objects.all()
     if request.method == "POST":
         nombre = request.POST["first_name"].capitalize()
@@ -224,8 +224,12 @@ def productos(request):
     form = ProductoForm(request.POST)
     formCat = CategoryForm(request.POST)
     categorias = Category.objects.all()
-    provedor = Provedor.objects.get(provedor=request.user.id)
-    productos = Producto.objects.all()
+    try:
+        provedor = Provedor.objects.get(provedor=request.user.id)
+        productos = Producto.objects.all()
+    except IntegrityError:
+            messages.warning(request=request,message="Hubo un problema intente mas tarde")
+            return HttpResponseRedirect(reverse("home"))
     productosProvedor = Producto.objects.filter(vendedor=provedor)
     if request.method == 'POST':
         
