@@ -473,7 +473,7 @@ def deleteServicio(request,id):
         servicio = Service.objects.get(pk=id)
         servicio.delete()
         return HttpResponseRedirect(reverse("adminreservas"),{"message":messages.success(request, "Servicio eliminado")})
-    except Category.DoesNotExist:
+    except Service.DoesNotExist:
         messages.error(request, "Servicio no existe")
         return render(request, "adminPanel/reservas_control.html")
 def deleteMascota(request,id):
@@ -509,7 +509,7 @@ def deleteProducto(request, id):
         producto.delete()
         
         return HttpResponseRedirect(reverse("productos"),{"message":messages.success(request, "Producto eliminado")})
-    except CustomUser.DoesNotExist:
+    except Producto.DoesNotExist:
         messages.error(request, "Producto no existe")
         return render(request, "productos.html")
     
@@ -519,7 +519,7 @@ def deleteProvedor(request, id):
         provedor.delete()
         
         return HttpResponseRedirect(reverse("provedores"),{"message":messages.success(request, "Provedor eliminado")})
-    except CustomUser.DoesNotExist:
+    except Provedor.DoesNotExist:
         messages.error(request, "Provedor no existe")
         return render(request, "provedores.html")
     
@@ -608,8 +608,14 @@ def productosList(request):
         if "carrito" in request.session.keys():
             for key, value in request.session["carrito"].items():
                 total += int(value["precio"])
-    productos = Producto.objects.all().order_by('date')        
-    return render(request, 'productos_list.html',{"MEDIA_URL": settings.MEDIA_URL, "total_carrito": total,"productos": productos,  "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY  })      
+    try:
+        productos = Producto.objects.all().order_by('date')        
+    except ObjectDoesNotExist:
+        messages.warning(request, "No tienes un perfil de proveedor asociado.")
+    except IntegrityError:
+        messages.warning(request, "Hubo un problema, intente más tarde.")
+        #,  "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY deleted from render siguiente
+    return render(request, 'productos_list.html',{"MEDIA_URL": settings.MEDIA_URL, "total_carrito": total,"productos": productos })      
        
 
 @login_required
