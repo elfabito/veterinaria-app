@@ -615,8 +615,8 @@ def productosList(request):
         messages.warning(request, "No tienes un perfil de proveedor asociado.")
     except IntegrityError:
         messages.warning(request, "Hubo un problema, intente más tarde.")
-        #,  "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY deleted from render siguiente
-    return render(request, 'productos_list.html',{"MEDIA_URL": settings.MEDIA_URL, "total_carrito": total,"productos": productos })      
+        #,  "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY deleted from render siguiente "MEDIA_URL": settings.MEDIA_URL,
+    return render(request, 'productos_list.html',{ "total_carrito": total,"productos": productos })      
        
 
 @login_required

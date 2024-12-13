@@ -3,9 +3,9 @@
 {% block title %}Todos los productos{% endblock %}
 
 {% block script %}
-<script
+<!-- <script
     src="https://www.paypal.com/sdk/js?ARZ1th0GQG7fWDQlwkJCKoLdi1EQmRz30nBHUVuHH_cekCE3oIhcr6IXiK6svPzthqT62ewtnF1kOo-6=test&currency=USD"></script>
-<script src="https://js.stripe.com/v3/"></script>
+<script src="https://js.stripe.com/v3/"></script> -->
 {% endblock %}
 
 {% block body %}
@@ -19,7 +19,7 @@
                 <!-- Agregamos 'd-inline-block' y 'text-center' para centrar el contenido en dispositivos móviles -->
                 
                 {% if producto.image %}
-                <img style="object-fit: cover; height: 350px; width: 350px;" src="{{ producto.image.url}}" alt="">
+                <img style="object-fit: cover; height: 220px; width: 220px;" src="{{ producto.image.url}}" alt="">
                 {%else%}
                 <img style="object-fit: cover; height: 220px; width: 220px;" src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" width="120px" alt="">
                 {%endif%}
@@ -46,7 +46,7 @@
         {% endif %}
     </div>
 </div>
-<script>
+<!-- <script>
     var stripe = Stripe('{{stripe_publishable_key}}')
     var checkoutButton = document.getElementById("carritocheckout-button")
 
@@ -79,5 +79,5 @@
     catch (error) {
         console.log(error)
     }
-</script>
+</script> -->
 {% endblock %}
