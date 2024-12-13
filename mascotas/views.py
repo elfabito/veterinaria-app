@@ -227,11 +227,12 @@ def productos(request):
     categorias = Category.objects.all()
 
     provedor = None
-    productos = Producto.objects.all()
+    productos = []
     productosProvedor = None
 
     try:
         # Buscar el proveedor
+        productos = Producto.objects.all()
         provedor = Provedor.objects.get(provedor=request.user.id)
         productosProvedor = Producto.objects.filter(vendedor=provedor)
     except ObjectDoesNotExist:
@@ -602,7 +603,7 @@ def editProducto(request, id):
     
 @login_required  
 def productosList(request):
-    
+    productos = []
     total = 0
     if request.user.is_authenticated:
         if "carrito" in request.session.keys():
