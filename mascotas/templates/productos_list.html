@@ -17,8 +17,13 @@
             {% for producto in productos %}
             <div id="productos" class="d-inline-block text-center">
                 <!-- Agregamos 'd-inline-block' y 'text-center' para centrar el contenido en dispositivos móviles -->
-                <img style="object-fit: cover; height: 220px; width: 220px;" src="{{ producto.image.url }}"
-                    width="120px" alt="">
+                
+                {% if producto.image %}
+                <img style="object-fit: cover; height: 350px; width: 350px;" src="{{ producto.image.url}}" alt="">
+                {%else%}
+                <img style="object-fit: cover; height: 220px; width: 220px;" src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" width="120px" alt="">
+                {%endif%}
+                
                 <div id="content">
                     <br>
                     <h2><a href="{% url 'productdetail' producto.idProducto%}"
