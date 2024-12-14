@@ -14,14 +14,8 @@
     <div class="row justify-content-center align-items-center">
         <div class="col-12 col-md-6 mt-3 pt-3">
             <div class="card mx-auto" style="width: 18rem; margin-bottom: 50px;">
-                
-                    {% if producto.image %}
-                    <img src="{{ producto.image.url }}" style="object-fit: cover" width="250px" height="250px" class="card-img-top"
-                        alt="...">
-                    {%else%}
-                    <img style="object-fit: cover; height: 220px; width: 220px;"
-                        src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg" width="120px" alt="">
-                    {%endif%}
+                <img src="{{ producto.image.url if producto.image else 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg' }}" style="object-fit: cover" width="250px" height="250px"
+                    class="card-img-top" alt="...">
                 <div class="card-body">
                     <h5 class="card-title">{{producto.nombre}}</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
@@ -44,8 +38,8 @@
         {% endif %}
     </div>
 </div>
-
-<!-- <script>
+<!-- 
+<script>
     var stripe = Stripe('{{stripe_publishable_key}}');
     var checkoutButton = document.getElementById("carritocheckout-button");
 
@@ -78,5 +72,5 @@
     catch (error) {
         console.log(error);
     }
-</script> -->
-{% endblock %}
+</script>-->
+{% endblock %} 

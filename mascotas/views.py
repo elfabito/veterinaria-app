@@ -244,7 +244,11 @@ def productos(request):
     if request.method == 'POST':
         if form.is_valid():
             producto = form.save(commit=False)
-            producto.image = request.FILES.get('imagefile')
+            if 'imagefile' in request.FILES:
+                producto.image = request.FILES['imagefile']
+            else:
+                producto.image = "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+            
             producto.vendedor = provedor
             producto.save()
             messages.success(request, "Producto agregado con éxito.")

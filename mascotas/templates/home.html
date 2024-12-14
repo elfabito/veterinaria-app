@@ -82,8 +82,13 @@
     {% for producto in productos %}
 
     <div id="productos" style="margin-bottom: 40px;">
+        {% if producto.image %}
         <img style="object-fit: cover; height: 220px; width: 220px; margin-left: 12px;margin-right: 12px;"
             src="{{ producto.image.url }}" width="120px" alt="">
+        {%else%}
+        <img style="object-fit: cover; height: 220px; width: 220px; margin-left: 12px;margin-right: 12px;"
+            src="https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg">
+        {%endif%}
         <div id="content">
             <br>
             <h2><a href="{% if request.user.is_authenticated %}{% url 'productdetail' producto.idProducto%}{%endif%}"
