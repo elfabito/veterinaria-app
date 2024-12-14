@@ -247,7 +247,7 @@ def productos(request):
             if 'imagefile' in request.FILES:
                 producto.image = request.FILES['imagefile']
             else:
-                producto.image = "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+                producto.image = None
             
             producto.vendedor = provedor
             producto.save()
