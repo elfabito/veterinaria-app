@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-
+{% load static %}
 {% block title %}Todos los productos{% endblock %}
 
 
@@ -7,18 +7,17 @@
 <div class="container text-center justify-content-center">
     <div class="row mt-3 justify-content-center">
         <div class="col-12 col-md-6 mb-4 text-center">
-            
+
             {% if productos %}
             {% for producto in productos %}
             <div id="productos" class="d-inline-block text-center">
                 {% if producto.image %}
-                <img style="object-fit: cover; height: 220px; width: 220px; "
-                    src="{{ producto.image.url }}" width="120px" alt="">
+                <img style="object-fit: cover; height: 220px; width: 220px; " src="{{ producto.image.url }}"
+                    width="120px" alt="">
                 {%else%}
-                <img style="object-fit: cover; height: 220px; width: 220px"
-                    src="{% static 'No_Image_Available.jpg' %}">
+                <img style="object-fit: cover; height: 220px; width: 220px" src="{% static 'No_Image_Available.jpg' %}">
                 {%endif%}
-                
+
                 <div id="content">
                     <br>
                     <h2><a href="{% url 'productdetail' producto.idProducto%}"
