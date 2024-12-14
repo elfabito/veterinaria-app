@@ -7,11 +7,11 @@
 <div class="container text-center justify-content-center">
     <div class="row mt-3 justify-content-center">
         <div class="col-12 col-md-6 mb-4 text-center">
-            <!-- Agregamos 'text-center' para centrar el contenido en dispositivos móviles -->
+            
             {% if productos %}
             {% for producto in productos %}
             <div id="productos" class="d-inline-block text-center">
-                <!-- Agregamos 'd-inline-block' y 'text-center' para centrar el contenido en dispositivos móviles -->
+                
                 <img style="object-fit: cover; height: 220px; width: 220px;"
                     src="{% if producto.image %}{{ producto.image.url }}{% else %}https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg{% endif %}"
                     width="120px" alt="">

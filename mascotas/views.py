@@ -266,7 +266,7 @@ def productos(request):
         "formCat": formCat,
         "categorias": categorias,
         "productos": productosProvedor if provedor else productos,
-        "MEDIA_URL": settings.MEDIA_URL,
+        
     })
         
    
@@ -579,7 +579,7 @@ def editProducto(request, id):
         return render(request, "productos.html")
     
     if request.method == "GET":
-           return render ( request, "product_detail.html", { "MEDIA_URL": settings.MEDIA_URL, "total_carrito": total,"producto": producto, "stripe_publishable_key" : settings.STRIPE_PUBLIC_KEY })
+           return render ( request, "product_detail.html", { "total_carrito": total,"producto": producto })
     elif request.method == "PUT":
         data = json.loads(request.body)
         nombre = data.get("nombre")
@@ -674,149 +674,7 @@ def reservaUser(request, id):
         
         return HttpResponseRedirect(reverse("reservas"),{"message":messages.error(request, "Reserva eliminada")})
 
-# PAYMENT STRIPE
-# @login_required
-# @csrf_exempt
-# def create_checkout_session(request, id):
-    
-#     producto = Producto.objects.get(idProducto=id)
-#     user = CustomUser.objects.get(id= request.user.id)
-#     stripe.api_key = settings.STRIPE_SECRET_KEY 
 
-#     checkout_session = stripe.checkout.Session.create(
-#             customer_email = user.email,
-#             payment_method_types = ['card'],
-#             line_items=[
-#                 {
-#                     'price_data':{
-#                         'currency': 'USD',
-#                         'product_data': {
-#                             'name': producto.nombre
-#                         },
-#                         'unit_amount': int(producto.precio * 100)
-#                     },
-#                     'quantity': 1
-#                 }
-#             ],
-#             mode= 'payment',
-        
-#             success_url= request.build_absolute_uri(reverse("payment_success",args=[producto.idProducto])) + "?session_id={CHECKOUT_SESSION_ID}",
-#             cancel_url=request.build_absolute_uri(reverse("failed",args=[producto.idProducto])) + "?session_id={CHECKOUT_SESSION_ID}",
-#             )
-#     return JsonResponse({"sessionId": checkout_session.id})
-
-# PAYMENT STRIPE CARRITO
-# @login_required
-# @csrf_exempt
-# def create_checkout_session_carrito(request):
-#     carrito = Carrito(request)
-    
-#     user = CustomUser.objects.get(id= request.user.id)
-#     stripe.api_key = settings.STRIPE_SECRET_KEY 
-
-#     checkout_session = stripe.checkout.Session.create(
-#             customer_email = user.email,
-#             payment_method_types = ['card'],
-#             line_items=[
-#                 {
-#                     'price_data':{
-#                         'currency': 'USD',
-#                         'product_data': {
-#                             'name': "Total Carrito"
-#                         },
-#                         'unit_amount': int((carrito.totalCarrito(request)) * 100)
-#                     },
-#                     'quantity': 1
-#                 }
-#             ],
-#             mode= 'payment',
-        
-#             success_url= request.build_absolute_uri(reverse("payment_success_carrito")) + "?session_id={CHECKOUT_SESSION_ID}",
-#             cancel_url=request.build_absolute_uri(reverse("payment_failed_carrito")) + "?session_id={CHECKOUT_SESSION_ID}",
-#             )
-#     return JsonResponse({"sessionId": checkout_session.id})
-
-# def payment_success(request, id):
-#   return(request, 'payment_success.html')
- 
-# paypalrestsdk.configure({
-#     "mode": settings.PAYPAL_MODE,
-#     "client_id": settings.PAYPAL_CLIENT_ID,
-#     "client_secret": settings.PAYPAL_CLIENT_SECRET,
-# })
-
-# #PAYMENT PAYPAL
-# def create_payment(request, id):
-#     producto = Producto.objects.get(pk=id)
-#     payment = paypalrestsdk.Payment({
-#         "intent": "sale",
-#         "payer": {
-#             "payment_method": "paypal",
-#         },
-#         "redirect_urls": {
-#             "return_url": request.build_absolute_uri(reverse('execute_payment')),
-#             "cancel_url": request.build_absolute_uri(reverse('payment_failed')),
-#         },
-#         "transactions": [
-#             {
-#                 "amount": {
-#                     "total": ('%.2f' % producto.precio),  # Total amount in USD
-#                     "currency": "USD",
-#                 },
-#                 "description": producto.nombre,
-#             }
-#         ],
-#     })
-
-#     if payment.create():
-#         return redirect(payment.links[1].href)  # Redirect to PayPal for payment
-#     else:
-#         return render(request, 'payment_failed.html')
-
-# @login_required
-# #PAYMENT PAYPAL CARRITO
-# def create_payment_carrito(request):
-    
-#     carrito = Carrito(request)
-    
-#     payment = paypalrestsdk.Payment({
-#         "intent": "sale",
-#         "payer": {
-#             "payment_method": "paypal",
-#         },
-#         "redirect_urls": {
-#             "return_url": request.build_absolute_uri(reverse('execute_payment')),
-#             "cancel_url": request.build_absolute_uri(reverse('payment_failed_carrito')),
-#         },
-#         "transactions": [
-#             {
-#                 "amount": {
-#                     "total": ('%.2f' % carrito.totalCarrito(request)),  # Total amount in USD
-#                     "currency": "USD",
-#                 },
-#                 "description": str(carrito.showproductos()),
-#             }
-#         ],
-#     })
-
-#     if payment.create():
-#         return redirect(payment.links[1].href)  # Redirect to PayPal for payment
-#     else:
-#         return render(request, 'payment_failed.html')
-
-# def execute_payment(request):
-#     payment_id = request.GET.get('paymentId')
-#     payer_id = request.GET.get('PayerID')
-
-#     payment = paypalrestsdk.Payment.find(payment_id)
-
-#     if payment.execute({"payer_id": payer_id}):
-#         return render(request, 'payment_success.html')
-#     else:
-#         return render(request, 'payment_failed.html')
-
-# def payment_failed(request):
-#     return render(request, 'payment_failed.html')
 
 # CARRITO de Compras
 

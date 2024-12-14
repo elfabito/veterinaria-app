@@ -3,11 +3,7 @@
 
 {% block title %} Detalles del Producto {% endblock %}
 
-<!-- {% block script %}
-<script
-    src="https://www.paypal.com/sdk/js?ARZ1th0GQG7fWDQlwkJCKoLdi1EQmRz30nBHUVuHH_cekCE3oIhcr6IXiK6svPzthqT62ewtnF1kOo-6=test&currency=USD"></script>
-<script src="https://js.stripe.com/v3/"></script>
-{% endblock %} -->
+
 
 {% block body %}
 <div class="container text-center">
@@ -38,39 +34,5 @@
         {% endif %}
     </div>
 </div>
-<!-- 
-<script>
-    var stripe = Stripe('{{stripe_publishable_key}}');
-    var checkoutButton = document.getElementById("carritocheckout-button");
 
-    try {
-        checkoutButton.addEventListener("click", function () {
-            checkoutButton.innerHTML = "Processing <i class='fas fa-spinner fa-spin'></i>";
-            var email = "{{request.user.email}}";
-            fetch("/create-checkout-session-carrito", {
-                method: "POST",
-                body: JSON.stringify({ email: email })
-            })
-                .then(function (response) {
-                    console.log(response);
-                    console.log(stripe);
-                    return response.json();
-                })
-                .then(function (session) {
-                    return stripe.redirectToCheckout({ sessionId: session.sessionId });
-                })
-                .then(function (result) {
-                    if (result.error) {
-                        alert(result.error.message);
-                    }
-                })
-                .catch(function (error) {
-                    console.log("error", error);
-                });
-        });
-    }
-    catch (error) {
-        console.log(error);
-    }
-</script>-->
 {% endblock %}
