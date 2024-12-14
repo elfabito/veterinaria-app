@@ -456,14 +456,7 @@ def reservas(request):
             datetime_ordered = formatted_datetime,
             
         )
-        recipients = [user.email]
-        for veterinario in veterinarios:
-            recipients.append(veterinario.email)
-        send_mail(
-    		subject=f'Nueva reserva de {user.first_name} esperando por aprobar',
-    		message=comment,
-    		from_email=settings.EMAIL_HOST_USER,
-    		recipient_list=recipients)
+
         new_appointment.save()
         messages.success(request, "Reserva registrada correctamente, espere que el veterinario apruebe su consulta")
         return redirect(reverse("reservas"))
